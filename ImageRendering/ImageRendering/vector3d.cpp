@@ -53,6 +53,11 @@ double vector3d::operator*(vector3d a) const
 	return x * a.getX() + y * a.getY() + z * a.getZ();
 }
 
+vector3d vector3d::operator*(double number) const
+{
+	return {x*number, y*number, z*number};
+}
+
 vector3d vector3d::crossProduct(vector3d a) const
 {
 	return {y * a.getZ() - z * a.getY(), z * a.getX() - x * a.getZ(), x * a.getY() - y * a.getX()};

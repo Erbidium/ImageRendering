@@ -1,31 +1,31 @@
 ﻿#include "triangle.h"
 
-vector3d triangle::getVerticle1() const
+vector3d triangle::getVertex1() const
 {
-	return verticle1;
+	return vertex1;
 }
 
-vector3d triangle::getVerticle2() const
+vector3d triangle::getVertex2() const
 {
-	return verticle2;
+	return vertex2;
 }
 
-vector3d triangle::getVerticle3() const
+vector3d triangle::getVertex3() const
 {
-	return verticle3;
+	return vertex3;
 }
 
-void triangle::setVerticle1(vector3d newVerticle1)
+void triangle::setVertex1(vector3d newVertex1)
 {
-	verticle1 = newVerticle1;
+	vertex1 = newVertex1;
 }
 
-void triangle::setVerticle2(vector3d newVerticle2)
+void triangle::setVertex2(vector3d newVertex2)
 {
-	verticle1 = newVerticle2;
+	vertex2 = newVertex2;
 }
 
-void triangle::setVerticle3(vector3d newVerticle3)
+void triangle::setVertex3(vector3d newVertex3)
 {
-	verticle1 = newVerticle3;
+	vertex3 = newVertex3;
 }
