@@ -21,9 +21,15 @@
     <ClCompile Include="vector3d.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="triangle.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vector3d.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="triangle.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
   </ItemGroup>
