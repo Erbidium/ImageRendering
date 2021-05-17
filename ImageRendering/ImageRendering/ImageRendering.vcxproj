@@ -141,11 +141,13 @@
   <ItemGroup>
     <ClCompile Include="intersectionChecker.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="projectionPlane.cpp" />
     <ClCompile Include="triangle.cpp" />
     <ClCompile Include="vector3d.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="intersectionChecker.h" />
+    <ClInclude Include="projectionPlane.h" />
     <ClInclude Include="triangle.h" />
     <ClInclude Include="vector3d.h" />
   </ItemGroup>

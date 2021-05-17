@@ -27,6 +27,9 @@
     <ClCompile Include="intersectionChecker.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="projectionPlane.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vector3d.h">
@@ -37,6 +40,9 @@
     </ClInclude>
     <ClInclude Include="intersectionChecker.h">
       <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="projectionPlane.h">
+      <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
