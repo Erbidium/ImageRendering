@@ -1,5 +1,3 @@
-#include <iostream>
-
 #pragma pack(push, 1)
 struct BMP {
     int8_t id[2];            // ַאגזהט הג³ כ³עונט 'B' ³ 'M'

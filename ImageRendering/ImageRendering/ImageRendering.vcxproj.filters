@@ -30,18 +30,30 @@
     <ClCompile Include="projectionPlane.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="WorkWithBMP.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="vector3d.h">
-      <Filter>Исходные файлы</Filter>
+    <ClInclude Include="projectionPlane.h">
+      <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="triangle.h">
-      <Filter>Исходные файлы</Filter>
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="WorkWithBMP.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="vector3d.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="PIXEL.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="BMP.h">
+      <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="intersectionChecker.h">
-      <Filter>Исходные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="projectionPlane.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

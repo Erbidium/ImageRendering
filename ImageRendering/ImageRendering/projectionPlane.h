@@ -1,21 +1,16 @@
 #pragma once
 #include <vector>
 #include "vector3d.h"
-
-struct PIXEL {
-    char B;
-    char G;
-    char R;
-};
+#include "PIXEL.h"
 
 class projectionPlane
 {
-	std::vector<std::vector<PIXEL>> pixels;
 	std::vector<std::vector<vector3d>> pixelsCoordinatesInWorld;
 	int width;
 	int height;
 	vector3d centerOfPlane;
 public:
+	std::vector<std::vector<PIXEL>> pixels;
 	std::vector<std::vector<vector3d>> getPixelsCoordinatesInWorld(){return pixelsCoordinatesInWorld;}
 	projectionPlane(int width, int height, vector3d centerOfPlane):
 	width(width), height(height), centerOfPlane(centerOfPlane),

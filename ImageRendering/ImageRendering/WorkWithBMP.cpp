@@ -1,9 +1,8 @@
-#include <iostream>
 #include <fstream>
 #include <vector>
 #include "WorkWithBMP.h"
-#include "PIXEL.h"
 #include "BMP.h"
+
 using namespace std;
 
 void WorkWithBMP::createBMPImage(int depth, int width, vector<vector<PIXEL>>& image)

@@ -144,12 +144,16 @@
     <ClCompile Include="projectionPlane.cpp" />
     <ClCompile Include="triangle.cpp" />
     <ClCompile Include="vector3d.cpp" />
+    <ClCompile Include="WorkWithBMP.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BMP.h" />
     <ClInclude Include="intersectionChecker.h" />
+    <ClInclude Include="PIXEL.h" />
     <ClInclude Include="projectionPlane.h" />
     <ClInclude Include="triangle.h" />
     <ClInclude Include="vector3d.h" />
+    <ClInclude Include="WorkWithBMP.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

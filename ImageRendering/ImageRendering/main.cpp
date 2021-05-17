@@ -1,5 +1,5 @@
-﻿#include <iostream>
-#include "vector3d.h"
+﻿#include "vector3d.h"
+#include "WorkWithBMP.h"
 #include "triangle.h"
 #include "projectionPlane.h"
 #include "intersectionChecker.h"
@@ -24,11 +24,18 @@ int main()
 			vector3d directionOfRay=plane.getPixelsCoordinatesInWorld()[i][j]-cameraPosition;
 			bool wasIntersection=intersectionChecker::rayIntersectsTriangle(cameraPosition, directionOfRay, &triangleOnScene, intersectionPoint);
 			if(wasIntersection==true)
-				//cout<<"was!"<<endl;
-				cout<<'X';
+			{
+				plane.pixels[i][j].B=255;
+				plane.pixels[i][j].G=255;
+				plane.pixels[i][j].R=255;
+			}
 			else
-				cout<<'-';
+			{
+				plane.pixels[i][j].B=0;
+				plane.pixels[i][j].G=0;
+				plane.pixels[i][j].R=0;
+			}
 		}
-		cout<<endl;
 	}
+	WorkWithBMP::createBMPImage(heightOfScreen, widthOfScreen, plane.pixels);
 }
