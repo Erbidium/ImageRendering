@@ -33,8 +33,16 @@
     <ClCompile Include="WorkWithBMP.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="fileReader.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="fileReader.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="vector3d.h">
+      <Filter>Файлы заголовков</Filter>
     <ClInclude Include="projectionPlane.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>

@@ -3,6 +3,7 @@
 #include "triangle.h"
 #include "projectionPlane.h"
 #include "intersectionChecker.h"
+//#include "fileReader.h"
 
 using namespace std;
 
@@ -38,4 +39,6 @@ int main()
 		}
 	}
 	WorkWithBMP::createBMPImage(heightOfScreen, widthOfScreen, plane.pixels);
+	//vector<triangle> triangles =  fileReader::readObj("cow.obj");
+	//cout << triangles[triangles.size()-1].getVertex1().getX();
 }

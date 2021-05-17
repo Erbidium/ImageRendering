@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="fileReader.cpp" />
     <ClCompile Include="intersectionChecker.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="projectionPlane.cpp" />
@@ -147,6 +148,7 @@
     <ClCompile Include="WorkWithBMP.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="fileReader.h" />
     <ClInclude Include="BMP.h" />
     <ClInclude Include="intersectionChecker.h" />
     <ClInclude Include="PIXEL.h" />
