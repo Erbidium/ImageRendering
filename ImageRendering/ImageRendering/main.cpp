@@ -2,5 +2,7 @@
 
 int main()
 {
-	fileReader::readObj("cow.obj");
+	vector<triangle> triangles =  fileReader::readObj("cow.obj");
+	cout << triangles[triangles.size()-1].getVertex1().getX();
+
 }
