@@ -25,10 +25,10 @@ public:
 		{
 			for(int pixelX=0;pixelX<width;pixelX++)
 			{
-				int pixelNDCX=(pixelX+0.5)/width;
-				int pixelNDCY=(pixelY+0.5)/width;
-				int pixelScreenX=2*pixelNDCX-1;
-				int pixelScreenY=1-2*pixelNDCY;
+				double pixelNDCX = (pixelX + 0.5) / width;
+				double pixelNDCY=(pixelY+0.5)/width;
+				double pixelScreenX=1-2*pixelNDCX;
+				double pixelScreenY=1-2*pixelNDCY;
 				vector3d relativePointOfPixel(pixelScreenX, pixelScreenY, 0);
 				pixelsCoordinatesInWorld[pixelY][pixelX]=relativePointOfPixel+centerOfPlane;
 			}
