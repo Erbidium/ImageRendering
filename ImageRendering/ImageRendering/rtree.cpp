@@ -128,7 +128,59 @@ double Rtree::getVolume(Node* current)
 
 vector<Node> Rtree::LinearSplit(vector<triangle> trigs)
 {
-
+	int indexOfLeaf1 = 0, indexOfLeaf2 = 1;
+	double maxDistance = (trigs[indexOfLeaf1].getCenter() - trigs[indexOfLeaf2].getCenter()).getLength();
+	for (int i = 0; i < trigs.size(); i++)
+	{
+		for (int j = i + 1; j < trigs.size(); j++)
+		{
+			double tempDistance = (trigs[i].getCenter() - trigs[j].getCenter()).getLength();
+			if (tempDistance > maxDistance)
+			{
+				maxDistance = tempDistance;
+				indexOfLeaf1 = i;
+				indexOfLeaf2 = j;
+			}
+		}
+	}
+	Node* leaf1;
+	leaf1->triangles.push_back(trigs[indexOfLeaf1]);
+	Node* leaf2;
+	leaf2->triangles.push_back(trigs[indexOfLeaf2]);
+	AdjustBounds(leaf1, trigs[indexOfLeaf1]);
+	AdjustBounds(leaf2, trigs[indexOfLeaf2]);
+	vector3d leaf1Center = leaf1->triangles[0].getCenter();
+	vector3d leaf2Center = leaf2->triangles[0].getCenter();
+	trigs.erase(trigs.begin() + indexOfLeaf1);
+	if (indexOfLeaf1 > indexOfLeaf2)
+	{
+		trigs.erase(trigs.begin() + indexOfLeaf2);
+	}
+	else
+	{
+		trigs.erase(trigs.begin() + indexOfLeaf2 - 1);
+	}
+	for (int i = 0; i < trigs.size(); i++)
+	{
+		triangle currentTriangle = trigs[i];
+		vector3d currentCenter = currentTriangle.getCenter();
+		double distanceToFirstLeaf = (currentCenter - leaf1Center).getLength();
+		double distanceToSecondLeaf = (currentCenter - leaf2Center).getLength();
+		if (distanceToFirstLeaf > distanceToSecondLeaf)
+		{
+			leaf1->triangles.push_back(currentTriangle);
+			AdjustBounds(leaf1, currentTriangle);
+		}
+		else
+		{
+			leaf2->triangles.push_back(currentTriangle);
+			AdjustBounds(leaf2, currentTriangle);
+		}
+	}
+	vector<Node> SplitNodes;
+	SplitNodes.push_back(*leaf1);
+	SplitNodes.push_back(*leaf2);
+	return SplitNodes;
 }
 
 vector<Node> Rtree::LinearSplitNodes(vector<Node*> Nodes)

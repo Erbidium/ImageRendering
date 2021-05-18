@@ -128,3 +128,12 @@ double triangle::getZ_min()
 	}
 	return Min_z;
 }
+
+vector3d triangle::getCenter()
+{
+	vector3d center;
+	center.setX((vertex1.getX() + vertex2.getX() + vertex3.getX()) / 3);
+	center.setY((vertex1.getY() + vertex2.getY() + vertex3.getY()) / 3);
+	center.setZ((vertex1.getZ() + vertex2.getZ() + vertex3.getZ()) / 3);
+	return center;
+}
