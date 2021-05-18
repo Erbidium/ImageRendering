@@ -52,3 +52,4 @@ vector3d triangle::getNormal()
 	vector3d normal = vector1.crossProduct(vector2);
 	return normal;
 }
+

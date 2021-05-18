@@ -20,4 +20,5 @@ public:
 	vector3d operator*(double number)const;
 	vector3d crossProduct(vector3d a) const;
 	double getLength();
+	double findCos(vector3d b);
 };
