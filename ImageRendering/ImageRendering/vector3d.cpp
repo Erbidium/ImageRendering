@@ -69,3 +69,4 @@ vector3d vector3d::crossProduct(vector3d a) const
 {
 	return {y * a.getZ() - z * a.getY(), z * a.getX() - x * a.getZ(), x * a.getY() - y * a.getX()};
 }
+

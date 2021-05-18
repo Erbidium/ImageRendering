@@ -44,3 +44,87 @@ vector3d triangle::getCenter()
 	center.setZ((vertex1.getZ()+vertex2.getZ()+vertex3.getZ())/3);
 	return center;
 }
+
+double triangle ::getX_max()
+{
+	double Max_x = this->vertex1.getX();
+	if (Max_x < this->vertex2.getX())
+	{
+		Max_x = this->vertex2.getX();
+	}
+	if (Max_x < this->vertex3.getX())
+	{
+		Max_x = this->vertex3.getX();
+	}
+	return Max_x;
+}
+
+double triangle::getY_max()
+{
+	double Max_y = this->vertex1.getY();
+	if (Max_y < this->vertex2.getY())
+	{
+		Max_y = this->vertex2.getY();
+	}
+	if (Max_y < this->vertex3.getY())
+	{
+		Max_y = this->vertex3.getY();
+	}
+	return Max_y;
+}
+
+double triangle::getZ_max()
+{
+	double Max_z = this->vertex1.getZ();
+	if (Max_z < this->vertex2.getZ())
+	{
+		Max_z = this->vertex2.getZ();
+	}
+	if (Max_z < this->vertex3.getZ())
+	{
+		Max_z = this->vertex3.getZ();
+	}
+	return Max_z;
+}
+
+double triangle::getX_min()
+{
+	double Min_x = this->vertex1.getX();
+	if (Min_x > this->vertex2.getX())
+	{
+		Min_x = this->vertex2.getX();
+	}
+	if (Min_x > this->vertex3.getX())
+	{
+		Min_x = this->vertex3.getX();
+	}
+	return Min_x;
+}
+
+double triangle::getY_min()
+{
+	double Min_y = this->vertex1.getY();
+	if (Min_y > this->vertex2.getY())
+	{
+		Min_y = this->vertex2.getY();
+	}
+	if (Min_y > this->vertex3.getY())
+	{
+		Min_y = this->vertex3.getY();
+	}
+	return Min_y;
+}
+
+double triangle::getZ_min()
+{
+	double Min_z = this->vertex1.getZ();
+	if (Min_z > this->vertex2.getZ())
+	{
+		Min_z = this->vertex2.getZ();
+	}
+	if (Min_z > this->vertex3.getZ())
+	{
+		Min_z = this->vertex3.getZ();
+	}
+	return Min_z;
+}

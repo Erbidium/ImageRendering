@@ -8,7 +8,7 @@
     <ClCompile Include="triangle.cpp" />
     <ClCompile Include="vector3d.cpp" />
     <ClCompile Include="WorkWithBMP.cpp" />
-    <ClCompile Include="rtree.cpp" />
+    <ClCompile Include="Rtree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fileReader.h" />
@@ -19,6 +19,7 @@
     <ClInclude Include="triangle.h" />
     <ClInclude Include="vector3d.h" />
     <ClInclude Include="WorkWithBMP.h" />
-    <ClInclude Include="rtree.h" />
+    <ClInclude Include="Rtree.h" />
+    <ClInclude Include="Node.h" />
   </ItemGroup>
 </Project>

@@ -16,4 +16,10 @@ public:
 	void setVertex2(vector3d);
 	void setVertex3(vector3d);
 	vector3d getCenter();
+	double getX_max();
+	double getY_max();
+	double getZ_max();
+	double getX_min();
+	double getY_min();
+	double getZ_min();
 };

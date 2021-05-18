@@ -143,7 +143,7 @@
     <ClCompile Include="intersectionChecker.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="projectionPlane.cpp" />
-    <ClCompile Include="rtree.cpp" />
+    <ClCompile Include="Rtree.cpp" />
     <ClCompile Include="triangle.cpp" />
     <ClCompile Include="vector3d.cpp" />
     <ClCompile Include="WorkWithBMP.cpp" />
@@ -152,9 +152,10 @@
     <ClInclude Include="fileReader.h" />
     <ClInclude Include="BMP.h" />
     <ClInclude Include="intersectionChecker.h" />
+    <ClInclude Include="Node.h" />
     <ClInclude Include="PIXEL.h" />
     <ClInclude Include="projectionPlane.h" />
-    <ClInclude Include="rtree.h" />
+    <ClInclude Include="Rtree.h" />
     <ClInclude Include="triangle.h" />
     <ClInclude Include="vector3d.h" />
     <ClInclude Include="WorkWithBMP.h" />
