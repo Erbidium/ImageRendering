@@ -24,7 +24,7 @@ public:
 				double pixelNDCY=(pixelY+0.5)/height;
 				double pixelScreenX=2*pixelNDCX-1;
 				double pixelScreenY=1-2*pixelNDCY;
-				vector3d relativePointOfPixel(pixelScreenX, pixelScreenY, 0);
+				vector3d relativePointOfPixel(pixelScreenX, 0, pixelScreenY);
 				pixelsCoordinatesInWorld[pixelY][pixelX]=relativePointOfPixel+centerOfPlane;
 			}
 		}

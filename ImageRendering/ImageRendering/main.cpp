@@ -11,10 +11,10 @@ int main()
 {
 	vector<triangle> triangles =  fileReader::readObj("cow.obj");
 	//cout << triangles[triangles.size()-1].getVertex1().getX();
-	vector3d cameraPosition(0, 0, -1);
-	vector3d cameraDirection(0, 0, 1);
+	vector3d cameraPosition(0, -1, 0);
+	vector3d cameraDirection(0, 1, 0);
 	//triangle triangleOnScene({10, 4, 0}, {10, -4, 0}, {10, 0, 4});
-	int widthOfScreen=100, heightOfScreen=100;
+	int widthOfScreen=300, heightOfScreen=300;
 	int counter=0;
 	projectionPlane plane(widthOfScreen, heightOfScreen, cameraPosition+cameraDirection);
 	for(int i=0;i<heightOfScreen;i++)
