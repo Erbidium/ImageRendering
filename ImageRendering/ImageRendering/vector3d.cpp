@@ -1,5 +1,7 @@
 ﻿#include "vector3d.h"
 
+#include <cmath>
+
 vector3d::vector3d():
 x(0), y(0), z(0)
 {}
@@ -56,6 +58,11 @@ double vector3d::operator*(vector3d a) const
 vector3d vector3d::operator*(double number) const
 {
 	return {x*number, y*number, z*number};
+}
+
+double vector3d::getLength()
+{
+	return std::sqrt(x*x+y*y+z*z);
 }
 
 vector3d vector3d::crossProduct(vector3d a) const

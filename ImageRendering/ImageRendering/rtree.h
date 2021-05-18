@@ -14,16 +14,70 @@ class rtree
     std::vector<rtree*> childs;
     std::vector<triangle> triangles;
     rtree * root;
-    rtree():root(nullptr){}
+public:
+	rtree():root(nullptr){}
     rtree(triangle newTriangle):root(nullptr)
     {
         triangles.push_back(newTriangle);
     }
     std::vector<rtree*> getChildren(){return childs;}
-public:
+	void addTriangle(triangle newTriangle)
+	{
+		triangles.push_back(newTriangle);
+	}
     std::vector<triangle> getTriangles()
     {
         return triangles;
+    }
+	void linearSplit(std::vector<rtree*>&splitNodes, rtree * leaf)
+    {
+	    std::vector<triangle> allTriangles=triangles;
+		allTriangles.push_back(leaf->getTriangles()[0]);
+    	int indexOfLeaf1=0, indexOfLeaf2=1;
+    	double maxDistance=(allTriangles[indexOfLeaf1].getCenter()-allTriangles[indexOfLeaf2].getCenter()).getLength();
+    	for(int i=0;i<allTriangles.size();i++)
+    	{
+    		for(int j=i+1;j<allTriangles.size();j++)
+    		{
+				double tempDistance=(allTriangles[i].getCenter()-allTriangles[j].getCenter()).getLength();
+    			if(tempDistance>maxDistance)
+    			{
+    				maxDistance=tempDistance;
+    				indexOfLeaf1=i;
+    				indexOfLeaf2=j;
+    			}
+    		}
+    	}
+    	rtree* leaf1=new rtree(allTriangles[indexOfLeaf1]);
+    	rtree* leaf2=new rtree(allTriangles[indexOfLeaf2]);
+		leaf1->adjustBounds(allTriangles[indexOfLeaf1]);
+		leaf1->adjustBounds(allTriangles[indexOfLeaf2]);
+    	vector3d leaf1Center=leaf1->getTriangles()[0].getCenter();
+    	vector3d leaf2Center=leaf2->getTriangles()[0].getCenter();
+    	allTriangles.erase(allTriangles.begin()+indexOfLeaf1);
+		if(indexOfLeaf1>indexOfLeaf2)
+    		allTriangles.erase(allTriangles.begin()+indexOfLeaf2);
+        else
+            allTriangles.erase(allTriangles.begin()+indexOfLeaf2-1);
+    	for(int i=0;i<allTriangles.size();i++)
+    	{
+    		triangle currentTriangle=allTriangles[i];
+    		vector3d currentCenter=currentTriangle.getCenter();
+    		double distanceToFirstLeaf=(currentCenter-leaf1Center).getLength();
+    		double distanceToSecondLeaf=(currentCenter-leaf2Center).getLength();
+    		if(distanceToFirstLeaf>distanceToSecondLeaf)
+            {
+            	leaf1->addTriangle(currentTriangle);
+            	leaf1->adjustBounds(currentTriangle);
+            }
+            else
+            {
+	            leaf2->addTriangle(currentTriangle);
+            	leaf2->adjustBounds(currentTriangle);
+            }
+    	}
+		splitNodes.push_back(leaf1);
+		splitNodes.push_back(leaf2);
     }
     void doInsert(std::vector<rtree*>&splitNodes, rtree * leaf)
     {
@@ -31,7 +85,7 @@ public:
             triangles.push_back(leaf->getTriangles()[0]);
         else
         {
-            linearSplit(splitNodes);
+            linearSplit(splitNodes, leaf);
         }
     }
 	double getVolume()
@@ -68,10 +122,6 @@ public:
             minBorders.setY(minInTriangle.getY());
         if(minBorders.getZ()<minInTriangle.getZ())
             minBorders.setZ(minInTriangle.getZ());
-    }
-    void linearSplit(std::vector<rtree*>&splitNodes)
-    {
-
     }
     void insert(triangle newTriangle)
     {

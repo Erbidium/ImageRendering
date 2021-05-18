@@ -4,12 +4,18 @@
 #include "projectionPlane.h"
 #include "intersectionChecker.h"
 #include "fileReader.h"
+#include "rtree.h"
 
 using namespace std;
 
 int main()
 {
 	vector<triangle> triangles =  fileReader::readObj("cow.obj");
+	rtree treeOfModel;
+	for(int i=0;i<triangles.size();i++)
+	{
+		treeOfModel.insert(triangles[i]);
+	}
 	//cout << triangles[triangles.size()-1].getVertex1().getX();
 	vector3d cameraPosition(0, -1, 0);
 	vector3d cameraDirection(0, 1, 0);

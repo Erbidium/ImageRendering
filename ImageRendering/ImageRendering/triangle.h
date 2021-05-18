@@ -15,4 +15,5 @@ public:
 	void setVertex1(vector3d);
 	void setVertex2(vector3d);
 	void setVertex3(vector3d);
+	vector3d getCenter();
 };
