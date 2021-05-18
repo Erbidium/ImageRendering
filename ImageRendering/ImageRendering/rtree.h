@@ -25,14 +25,22 @@ public:
 	{
 		triangles.push_back(newTriangle);
 	}
+	void clearTringles()
+	{
+		triangles.clear();
+	}
     std::vector<triangle> getTriangles()
     {
         return triangles;
     }
-	void linearSplit(std::vector<rtree*>&splitNodes, rtree * leaf)
+	void linearSplit(std::vector<rtree*>&splitNodes, triangle newTriangle)
     {
-	    std::vector<triangle> allTriangles=triangles;
-		allTriangles.push_back(leaf->getTriangles()[0]);
+	    std::vector<triangle> allTriangles;
+		for(int i=0;i<getTriangles().size();i++)
+		{
+			allTriangles.push_back(getTriangles()[i]);
+		}
+		allTriangles.push_back(newTriangle);
     	int indexOfLeaf1=0, indexOfLeaf2=1;
     	double maxDistance=(allTriangles[indexOfLeaf1].getCenter()-allTriangles[indexOfLeaf2].getCenter()).getLength();
     	for(int i=0;i<allTriangles.size();i++)
@@ -78,14 +86,15 @@ public:
     	}
 		splitNodes.push_back(leaf1);
 		splitNodes.push_back(leaf2);
+		clearTringles();
     }
-    void doInsert(std::vector<rtree*>&splitNodes, rtree * leaf)
+    void doInsert(std::vector<rtree*>&splitNodes, triangle newTriangle)
     {
         if(triangles.size()<maxNumberOfLeafs)
-            triangles.push_back(leaf->getTriangles()[0]);
+            triangles.push_back(newTriangle);
         else
         {
-            linearSplit(splitNodes, leaf);
+            linearSplit(splitNodes, newTriangle);
         }
     }
 	double getVolume()
@@ -127,7 +136,7 @@ public:
     {
         std::vector<rtree*>splitNodes;
         rtree * leafNode=new rtree(newTriangle);
-        chooseLeaf(splitNodes, leafNode);
+        chooseLeaf(splitNodes, this, newTriangle);
         adjustBounds(newTriangle);
         if(splitNodes.size()>0)
         {
@@ -138,16 +147,16 @@ public:
             }
         }
     }
-    void chooseLeaf(std::vector<rtree*>&splitNodes, rtree * currentTreeNode)
+    void chooseLeaf(std::vector<rtree*>&splitNodes, rtree * currentTreeNode, triangle newTriangle)
     {
         if(currentTreeNode->getChildren().size()==0)
         {
-            doInsert(splitNodes, currentTreeNode);
-            adjustBounds(currentTreeNode->getTriangles()[0]);
+            doInsert(splitNodes, newTriangle);
+            adjustBounds(newTriangle);
         }
         else
         {
-        	triangle currentTriangle=currentTreeNode->getTriangles()[0];
+        	triangle currentTriangle=newTriangle;
             rtree temp=*childs[0];
         	int indexOfChild=0;
         	double previousVolume=temp.getVolume();
@@ -165,14 +174,21 @@ public:
         		}
         	}
             rtree * optimalNode=childs[indexOfChild];
-            chooseLeaf(splitNodes, optimalNode);
+            chooseLeaf(splitNodes, optimalNode, currentTriangle);
             adjustBounds(currentTriangle);
             if(!splitNodes.empty())
             {
                 if(childs.size()<maxEntries)
                 {
 	                childs.push_back(splitNodes[0]);
+                	childs.push_back(splitNodes[1]);
+                	clearTringles();
                 	splitNodes.clear();
+                }
+                else
+                {
+                	splitNodes.clear();
+	                linearSplit(splitNodes, currentTriangle);
                 }
             }
 		}
