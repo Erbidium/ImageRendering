@@ -44,3 +44,11 @@ vector3d triangle::getCenter()
 	center.setZ((vertex1.getZ()+vertex2.getZ()+vertex3.getZ())/3);
 	return center;
 }
+
+vector3d triangle::getNormal()
+{
+	vector3d vector1 = vertex2 - vertex1;
+	vector3d vector2 = vertex3 - vertex1;
+	vector3d normal = vector1.crossProduct(vector2);
+	return normal;
+}
