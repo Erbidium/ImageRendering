@@ -13,10 +13,9 @@ class rtree
     vector3d minBorders;
     std::vector<rtree*> childs;
     std::vector<triangle> triangles;
-    rtree * root;
 public:
-	rtree():root(nullptr){}
-    rtree(triangle newTriangle):root(nullptr)
+	rtree(){}
+    rtree(triangle newTriangle)
     {
         triangles.push_back(newTriangle);
     }
@@ -35,11 +34,7 @@ public:
     }
 	void linearSplit(std::vector<rtree*>&splitNodes, triangle newTriangle)
     {
-	    std::vector<triangle> allTriangles;
-		for(int i=0;i<getTriangles().size();i++)
-		{
-			allTriangles.push_back(getTriangles()[i]);
-		}
+	    std::vector<triangle> allTriangles=triangles;
 		allTriangles.push_back(newTriangle);
     	int indexOfLeaf1=0, indexOfLeaf2=1;
     	double maxDistance=(allTriangles[indexOfLeaf1].getCenter()-allTriangles[indexOfLeaf2].getCenter()).getLength();
@@ -141,6 +136,7 @@ public:
         if(splitNodes.size()>0)
         {
             childs.clear();
+        	triangles.clear();
             for(int i=0;i<splitNodes.size();i++)
             {
                 childs.push_back(splitNodes[i]);
@@ -188,6 +184,14 @@ public:
                 else
                 {
                 	splitNodes.clear();
+                    std::vector<triangle> allTriangles;
+                    for(int i=0;i<childs.size();i++)
+                    {
+						std::vector<triangle> tempTriangles;
+                    	tempTriangles=childs[i]->getTriangles();
+                    	allTriangles.insert(allTriangles.begin(), tempTriangles.begin(), tempTriangles.end());
+                    }
+                	triangles=allTriangles;
 	                linearSplit(splitNodes, currentTriangle);
                 }
             }

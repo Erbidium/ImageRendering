@@ -12,9 +12,10 @@ int main()
 {
 	vector<triangle> triangles =  fileReader::readObj("cow.obj");
 	rtree treeOfModel;
-	for(int i=0;i<triangles.size();i++)
+	for(int i=0;i<15;i++)
 	{
 		treeOfModel.insert(triangles[i]);
+		cout<<"i "<<i<<endl;
 	}
 	//cout << triangles[triangles.size()-1].getVertex1().getX();
 	vector3d cameraPosition(0, -1, 0);
