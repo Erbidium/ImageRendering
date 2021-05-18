@@ -3,27 +3,36 @@
 #include "triangle.h"
 #include "projectionPlane.h"
 #include "intersectionChecker.h"
-//#include "fileReader.h"
+#include "fileReader.h"
 
 using namespace std;
 
 int main()
 {
-	vector3d cameraPosition(0, 0, 0);
-	vector3d cameraDirection(1, 0, 0);
-	triangle triangleOnScene({10, 4, 0}, {10, -4, 0}, {10, 0, 4});
+	vector<triangle> triangles =  fileReader::readObj("cow.obj");
+	//cout << triangles[triangles.size()-1].getVertex1().getX();
+	vector3d cameraPosition(0, 0, -2);
+	vector3d cameraDirection(0, 0, 1);
+	//triangle triangleOnScene({10, 4, 0}, {10, -4, 0}, {10, 0, 4});
 	int widthOfScreen=100, heightOfScreen=100;
+	int counter=0;
 	projectionPlane plane(widthOfScreen, heightOfScreen, cameraPosition+cameraDirection);
 	for(int i=0;i<heightOfScreen;i++)
 	{
 		for(int j=0;j<widthOfScreen;j++)
 		{
-			//cout<<plane.getPixelsCoordinatesInWorld()[i][j].getX()<<" ";
-			//cout<<plane.getPixelsCoordinatesInWorld()[i][j].getY()<<" ";
-			//cout<<plane.getPixelsCoordinatesInWorld()[i][j].getZ()<<endl;
-			vector3d intersectionPoint;
-			vector3d directionOfRay=plane.getPixelsCoordinatesInWorld()[i][j]-cameraPosition;
-			bool wasIntersection=intersectionChecker::rayIntersectsTriangle(cameraPosition, directionOfRay, &triangleOnScene, intersectionPoint);
+			bool wasIntersection=false;
+			vector3d intersectionPoint, directionOfRay=plane.getPixelsCoordinatesInWorld()[i][j]-cameraPosition;
+			for(int k=0;k<triangles.size();k++)
+			{
+				wasIntersection=intersectionChecker::rayIntersectsTriangle(cameraPosition, directionOfRay, &triangles[k], intersectionPoint);
+				if(wasIntersection==true)
+				{
+					cout<<"was! "<<counter<<" K: "<<k<<" i: "<<i<<" j: "<<j<<endl;
+					counter++;
+					break;
+				}
+			}
 			if(wasIntersection==true)
 			{
 				plane.pixels[i][j].B=255;
@@ -39,6 +48,4 @@ int main()
 		}
 	}
 	WorkWithBMP::createBMPImage(heightOfScreen, widthOfScreen, plane.pixels);
-	//vector<triangle> triangles =  fileReader::readObj("cow.obj");
-	//cout << triangles[triangles.size()-1].getVertex1().getX();
 }

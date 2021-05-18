@@ -44,9 +44,9 @@ vector<triangle> fileReader::readObj(string nameOfFile)
 			k = s.find("//");
 			int thirdTop = stoi(s.substr(0, k));
 			s.erase(0, k + 2);
-			tempTriangle.setVertex1(tops[firstTop]);
-			tempTriangle.setVertex2(tops[secondTop]);
-			tempTriangle.setVertex3(tops[thirdTop]);
+			tempTriangle.setVertex1(tops[firstTop+1]);
+			tempTriangle.setVertex2(tops[secondTop+1]);
+			tempTriangle.setVertex3(tops[thirdTop+1]);
 			triangles.push_back(tempTriangle);
 		}
 	}
