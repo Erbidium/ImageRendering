@@ -7,8 +7,7 @@
 class rtree
 {
     const int maxEntries=4;
-    const int minEntries=2;
-    const int maxNumberOfLeafs=5;
+    const int maxNumberOfLeafs=10;
     vector3d maxBorders;
     vector3d minBorders;
     std::vector<rtree*> childs;
@@ -32,7 +31,7 @@ public:
     {
         return triangles;
     }
-	void linearSplit(std::vector<rtree*>&splitNodes, triangle newTriangle)
+	void linearSplit(triangle newTriangle)
     {
 	    std::vector<triangle> allTriangles=triangles;
 		allTriangles.push_back(newTriangle);
@@ -79,17 +78,17 @@ public:
             	leaf2->adjustBounds(currentTriangle);
             }
     	}
-		splitNodes.push_back(leaf1);
-		splitNodes.push_back(leaf2);
+		childs.push_back(leaf1);
+		childs.push_back(leaf2);
 		clearTringles();
     }
-    void doInsert(std::vector<rtree*>&splitNodes, triangle newTriangle)
+    void doInsert(triangle newTriangle)
     {
         if(triangles.size()<maxNumberOfLeafs)
             triangles.push_back(newTriangle);
         else
         {
-            linearSplit(splitNodes, newTriangle);
+            linearSplit(newTriangle);
         }
     }
 	double getVolume()
@@ -98,9 +97,8 @@ public:
     }
     void adjustBounds(triangle newTriangle)
     {
-        vector3d maxInTriangle, minInTriangle;
-        maxInTriangle=newTriangle.getVertex1();
-        minInTriangle=newTriangle.getVertex1();
+	    vector3d maxInTriangle = newTriangle.getVertex1();
+        vector3d minInTriangle = newTriangle.getVertex1();
         if(maxInTriangle.getX()<std::max(newTriangle.getVertex2().getX(), newTriangle.getVertex3().getX()))
             maxInTriangle.setX(std::max(newTriangle.getVertex2().getX(), newTriangle.getVertex3().getX()));
         if(maxInTriangle.getY()<std::max(newTriangle.getVertex2().getY(), newTriangle.getVertex3().getY()))
@@ -129,25 +127,14 @@ public:
     }
     void insert(triangle newTriangle)
     {
-        std::vector<rtree*>splitNodes;
-        rtree * leafNode=new rtree(newTriangle);
-        chooseLeaf(splitNodes, this, newTriangle);
+        chooseLeaf(newTriangle);
         adjustBounds(newTriangle);
-        if(splitNodes.size()>0)
-        {
-            childs.clear();
-        	triangles.clear();
-            for(int i=0;i<splitNodes.size();i++)
-            {
-                childs.push_back(splitNodes[i]);
-            }
-        }
     }
-    void chooseLeaf(std::vector<rtree*>&splitNodes, rtree * currentTreeNode, triangle newTriangle)
+    void chooseLeaf(triangle newTriangle)
     {
-        if(currentTreeNode->getChildren().size()==0)
+        if(childs.empty())
         {
-            doInsert(splitNodes, newTriangle);
+            doInsert(newTriangle);
             adjustBounds(newTriangle);
         }
         else
@@ -163,39 +150,15 @@ public:
         		rtree temp=*(childs[i]);
         		previousVolume=temp.getVolume();
         		temp.adjustBounds(currentTriangle);
-        		if(minimalDeltaVolume<temp.getVolume()-previousVolume)
+        		if(minimalDeltaVolume>temp.getVolume()-previousVolume)
         		{
         			minimalDeltaVolume=temp.getVolume()-previousVolume;
         			indexOfChild=i;
         		}
         	}
             rtree * optimalNode=childs[indexOfChild];
-            chooseLeaf(splitNodes, optimalNode, currentTriangle);
+            optimalNode->chooseLeaf(currentTriangle);
             adjustBounds(currentTriangle);
-            if(!splitNodes.empty())
-            {
-                if(childs.size()<maxEntries)
-                {
-	                childs.push_back(splitNodes[0]);
-                	childs.push_back(splitNodes[1]);
-                	clearTringles();
-                	splitNodes.clear();
-                }
-                else
-                {
-                	splitNodes.clear();
-                    std::vector<triangle> allTriangles;
-                    for(int i=0;i<childs.size();i++)
-                    {
-						std::vector<triangle> tempTriangles;
-                    	tempTriangles=childs[i]->getTriangles();
-                    	allTriangles.insert(allTriangles.begin(), tempTriangles.begin(), tempTriangles.end());
-                    }
-                	triangles=allTriangles;
-	                linearSplit(splitNodes, currentTriangle);
-                }
-            }
 		}
     }
 };
-

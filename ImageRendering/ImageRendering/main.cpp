@@ -12,7 +12,7 @@ int main()
 {
 	vector<triangle> triangles =  fileReader::readObj("cow.obj");
 	rtree treeOfModel;
-	for(int i=0;i<15;i++)
+	for(int i=0;i<2000;i++)
 	{
 		treeOfModel.insert(triangles[i]);
 		cout<<"i "<<i<<endl;
