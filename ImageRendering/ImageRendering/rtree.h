@@ -9,10 +9,12 @@ class Rtree
     const int minEntries = 2;
     const int maxNumberOfLeafs = 5;
     Node* root;
+	bool findIntersectionInTree(vector3d rayOrigin, vector3d rayVector, vector3d& outIntersectionPoint, Node * current, bool&finished);
 public:
     Rtree() { root = new Node; }
 	~Rtree(){ delete root; }
     void insert(triangle);
+	bool intersectionOfRayAnd3Dmodel(vector3d rayOrigin, vector3d rayVector, vector3d& outIntersectionPoint);
     std::vector<Node*> ChooseLeaf(Node*, triangle);
     std::vector<Node*> DoInsert(Node*, triangle);
     std::vector<Node*> LinearSplit(std::vector<triangle>);

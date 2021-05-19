@@ -21,25 +21,15 @@ int main()
 	vector3d cameraPosition(0, -1, 0);
 	vector3d cameraDirection(0, 1, 0);
 	//triangle triangleOnScene({10, 4, 0}, {10, -4, 0}, {10, 0, 4});
-	int widthOfScreen=300, heightOfScreen=300;
+	int widthOfScreen=50, heightOfScreen=50;
 	int counter=0;
 	projectionPlane plane(widthOfScreen, heightOfScreen, cameraPosition+cameraDirection);
 	for(int i=0;i<heightOfScreen;i++)
 	{
 		for(int j=0;j<widthOfScreen;j++)
 		{
-			bool wasIntersection=false;
 			vector3d intersectionPoint, directionOfRay=plane.getPixelsCoordinatesInWorld()[i][j]-cameraPosition;
-			for(int k=0;k<triangles.size();k++)
-			{
-				wasIntersection=intersectionChecker::rayIntersectsTriangle(cameraPosition, directionOfRay, &triangles[k], intersectionPoint);
-				if(wasIntersection==true)
-				{
-					cout<<"was! "<<counter<<" K: "<<k<<" i: "<<i<<" j: "<<j<<endl;
-					counter++;
-					break;
-				}
-			}
+			bool wasIntersection=treeOfModel.intersectionOfRayAnd3Dmodel(cameraPosition, directionOfRay, intersectionPoint);
 			if(wasIntersection==true)
 			{
 				plane.pixels[i][j].B=255;
@@ -54,5 +44,5 @@ int main()
 			}
 		}
 	}
-	WorkWithBMP::createBMPImage(heightOfScreen, widthOfScreen, plane.pixels);
+	//WorkWithBMP::createBMPImage(heightOfScreen, widthOfScreen, plane.pixels);
 }

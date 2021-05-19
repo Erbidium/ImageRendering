@@ -18,6 +18,8 @@ public:
 	vector3d operator-(vector3d a) const;
 	double operator*(vector3d a) const;
 	vector3d operator*(double number)const;
+	bool operator<=(vector3d a)const;
+	bool operator>=(vector3d a)const;
 	vector3d crossProduct(vector3d a) const;
 	double getLength();
 };

@@ -1,4 +1,6 @@
 #include "Rtree.h"
+
+#include "intersectionChecker.h"
 using namespace std;
 
 void Rtree::insert(triangle trig)
@@ -14,6 +16,15 @@ void Rtree::insert(triangle trig)
 		}
 	}
 	AdjustBounds(root, trig);
+}
+
+bool Rtree::intersectionOfRayAnd3Dmodel(vector3d rayOrigin, vector3d rayVector, vector3d& outIntersectionPoint)
+{
+	bool finished=false;
+	if(!intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, root))
+		return false;
+	else
+		return findIntersectionInTree(rayOrigin, rayVector, outIntersectionPoint, root, finished);
 }
 
 vector<Node*> Rtree::ChooseLeaf(Node* current, triangle trig)
@@ -221,6 +232,35 @@ vector<Node*> Rtree::LinearSplit(vector<triangle> trigs)
 	SplitNodes.push_back(leaf1);
 	SplitNodes.push_back(leaf2);
 	return SplitNodes;
+}
+
+bool Rtree::findIntersectionInTree(vector3d rayOrigin, vector3d rayVector, vector3d& outIntersectionPoint, Node * current, bool&finished)
+{
+	if(current->childs.empty())
+	{
+		bool wasIntersection=false;
+		for(int i=0;(i<current->triangles.size())&&(!wasIntersection);i++)
+		{
+			wasIntersection=intersectionChecker::rayIntersectsTriangle(rayOrigin, rayVector, &(current->triangles[i]), outIntersectionPoint);
+			if(wasIntersection==true)
+			{
+				finished=true;
+				break;
+			}
+		}
+		return wasIntersection;
+	}
+	else
+	{
+		for(int i=0;(i<current->childs.size())&&(!finished);i++)
+		{
+			bool wasIntersectionWithRect=intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, current);
+			if(wasIntersectionWithRect)
+				findIntersectionInTree(rayOrigin, rayVector, outIntersectionPoint, current->childs[i], finished);
+		}
+		
+		return finished;
+	}
 }
 
 vector<Node*> Rtree::LinearSplitNodes(vector<Node*> Spleet, Node* current)

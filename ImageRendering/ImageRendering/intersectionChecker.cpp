@@ -37,3 +37,35 @@ bool intersectionChecker::rayIntersectsTriangle(vector3d rayOrigin, vector3d ray
     else
         return false;
 }
+
+
+bool intersectionChecker::intersectionRayAndBox(vector3d ray, vector3d rayOrigin, Node*current)
+{
+	vector3d maxVertex(current->x_max, current->y_max, current->z_max);
+	vector3d minVertex(current->x_min, current->y_min, current->z_min);
+	double tmin, tmax, tymin, tymax, tzmin, tzmax;
+	int sign[3];
+	vector3d invdir={1/ray.getX(), 1/ray.getY(), 1/ray.getZ()};
+	vector3d bounds[2];
+	bounds[0] = minVertex; 
+    bounds[1] = maxVertex; 
+	sign[0] = (invdir.getX() < 0); 
+    sign[1] = (invdir.getY() < 0); 
+    sign[2] = (invdir.getZ() < 0); 
+    tmin = (bounds[sign[0]].getX() - rayOrigin.getX()) * invdir.getX(); 
+    tmax = (bounds[1-sign[0]].getY() - rayOrigin.getX()) * invdir.getX(); 
+    tymin = (bounds[sign[1]].getY() - rayOrigin.getY()) * invdir.getY(); 
+    tymax = (bounds[1-sign[1]].getY() - rayOrigin.getY()) * invdir.getY(); 
+    if((tmin>tymax)||(tymin>tmax)) 
+        return false; 
+    if(tymin>tmin) 
+        tmin=tymin; 
+    if (tymax<tmax) 
+        tmax=tymax; 
+    tzmin=(bounds[sign[2]].getZ() - rayOrigin.getZ()) * invdir.getZ(); 
+    tzmax=(bounds[1-sign[2]].getZ() - rayOrigin.getZ()) * invdir.getZ(); 
+    return ((tmin>tzmax)||(tzmin>tmax))?false:true;
+	/*
+	https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-box-intersection
+	*/
+}

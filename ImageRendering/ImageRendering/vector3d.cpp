@@ -60,6 +60,16 @@ vector3d vector3d::operator*(double number) const
 	return {x*number, y*number, z*number};
 }
 
+bool vector3d::operator<=(vector3d a) const
+{
+	return ((x<=a.getX())&&(y<=a.getY())&&(z<=a.getZ()))?true:false;
+}
+
+bool vector3d::operator>=(vector3d a) const
+{
+	return ((x>=a.getX())&&(y>=a.getY())&&(z>=a.getZ()))?true:false;
+}
+
 double vector3d::getLength()
 {
 	return std::sqrt(x*x+y*y+z*z);
