@@ -16,6 +16,7 @@ int main()
 	{
 		treeOfModel.insert(triangles[i]);
 	}
+	
 	//cout << triangles[triangles.size()-1].getVertex1().getX();
 	vector3d cameraPosition(0, -1, 0);
 	vector3d cameraDirection(0, 1, 0);

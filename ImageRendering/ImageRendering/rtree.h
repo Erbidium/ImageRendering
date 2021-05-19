@@ -10,12 +10,12 @@ class Rtree
     const int maxNumberOfLeafs = 5;
     Node* root;
 public:
-    Rtree() { Node* root = new Node(); }
+    Rtree() { root = new Node; }
     void insert(triangle);
-    std::vector<Node> ChooseLeaf(Node*, triangle);
-    std::vector<Node> DoInsert(Node*, triangle);
-    std::vector<Node> LinearSplit(std::vector<triangle>);
-    std::vector<Node> LinearSplitNodes(std::vector<Node> Nodes, Node*);
+    std::vector<Node*> ChooseLeaf(Node*, triangle);
+    std::vector<Node*> DoInsert(Node*, triangle);
+    std::vector<Node*> LinearSplit(std::vector<triangle>);
+    std::vector<Node*> LinearSplitNodes(std::vector<Node*> Nodes, Node*);
     void AdjustBounds(Node*, triangle);
     void AdjustBoundsRect(Node* current, double x_max, double x_min, double y_max, double y_min, double z_max, double z_min);
     Node* MinimalResize(Node*, triangle);
