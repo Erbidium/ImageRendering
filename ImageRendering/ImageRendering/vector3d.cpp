@@ -71,6 +71,6 @@ vector3d vector3d::crossProduct(vector3d a) const
 }
 double vector3d::findCos(vector3d b)
 {
-	double alpha = *this * b / (sqrt(pow(x,2)+pow(y,2)+pow(z,2))* sqrt(pow(b.getX(), 2) + pow(b.getY(), 2) + pow(b.getZ(), 2)));
-	return alpha;
+	double cosAlpha = ((*this) * b) / (b.getLength()*getLength());
+	return cosAlpha;
 }
