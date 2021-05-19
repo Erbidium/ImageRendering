@@ -11,6 +11,7 @@ class Rtree
     Node* root;
 public:
     Rtree() { root = new Node; }
+	~Rtree(){ delete root; }
     void insert(triangle);
     std::vector<Node*> ChooseLeaf(Node*, triangle);
     std::vector<Node*> DoInsert(Node*, triangle);
