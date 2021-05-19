@@ -10,6 +10,7 @@ class Rtree
     const int maxNumberOfLeafs = 5;
     Node* root;
 public:
+    Rtree() { Node* root = new Node(); }
     void insert(triangle);
     std::vector<Node> ChooseLeaf(Node*, triangle);
     std::vector<Node> DoInsert(Node*, triangle);

@@ -3,7 +3,7 @@ using namespace std;
 
 void Rtree::insert(triangle trig)
 {
-	vector<Node> splitNodes = ChooseLeaf(root, trig);
+	vector<Node> splitNodes = ChooseLeaf(this->root, trig);
 	if (splitNodes.size() > 0)
 	{
 		Node newRoot;
@@ -36,7 +36,7 @@ vector<Node> Rtree::ChooseLeaf(Node* current, triangle trig)
 		{
 			if (current->childs.size() < maxEntries)
 			{
-				Node* newNode;
+				Node* newNode = new Node;
 				newNode->triangles.push_back(trig);
 				AdjustBounds(newNode, trig);
 				current->childs.push_back(newNode);
@@ -157,7 +157,7 @@ Node* Rtree::MinimalResizeRect(Node* current, double x_max, double y_max, double
 			indexofChild = i;
 		}
 	}
-	return current->childs[indexofChild]
+	return current->childs[indexofChild];
 }
 
 double Rtree::getVolume(Node* current)
@@ -182,9 +182,9 @@ vector<Node> Rtree::LinearSplit(vector<triangle> trigs)
 			}
 		}
 	}
-	Node* leaf1;
+	Node* leaf1 = new Node;
 	leaf1->triangles.push_back(trigs[indexOfLeaf1]);
-	Node* leaf2;
+	Node* leaf2 = new Node;
 	leaf2->triangles.push_back(trigs[indexOfLeaf2]);
 	AdjustBounds(leaf1, trigs[indexOfLeaf1]);
 	AdjustBounds(leaf2, trigs[indexOfLeaf2]);

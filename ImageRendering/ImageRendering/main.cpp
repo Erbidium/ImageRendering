@@ -4,14 +4,14 @@
 #include "projectionPlane.h"
 #include "intersectionChecker.h"
 #include "fileReader.h"
-#include "rtree.h"
+#include "Rtree.h"
 
 using namespace std;
 
 int main()
 {
 	vector<triangle> triangles =  fileReader::readObj("cow.obj");
-	rtree treeOfModel;
+	Rtree treeOfModel;
 	for(int i=0;i<triangles.size();i++)
 	{
 		treeOfModel.insert(triangles[i]);
