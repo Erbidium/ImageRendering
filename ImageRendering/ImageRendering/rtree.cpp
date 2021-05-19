@@ -44,15 +44,7 @@ vector<Node> Rtree::ChooseLeaf(Node* current, triangle trig)
 			}
 			else
 			{
-				vector<Node*> Nodes = current->childs;
-				for (int i = 0; i < SplitNodes.size(); i++)
-				{
-					for (int j = 0; j < SplitNodes[i].childs.size(); i++)
-					{
-						Nodes.push_back(SplitNodes[i].childs[j]);
-					}
-				}
-				SplitNodes = LinearSplitNodes(Nodes);
+				SplitNodes = LinearSplitNodes(SplitNodes, current);
 			}
 		}
 	}
@@ -102,6 +94,34 @@ void Rtree::AdjustBounds(Node* current, triangle trig)
 	}
 }
 
+void Rtree::AdjustBoundsRect(Node* current, double x_max, double x_min, double y_max, double y_min, double z_max, double z_min)
+{
+	if (current->x_max < x_max)
+	{
+		current->x_max = x_max;
+	}
+	if (current->y_max < y_max)
+	{
+		current->y_max = y_max;
+	}
+	if (current->z_max < z_max)
+	{
+		current->z_max = z_max;
+	}
+	if (current->x_min > x_min)
+	{
+		current->x_min = x_min;
+	}
+	if (current->y_min > y_min)
+	{
+		current->y_min = y_min;
+	}
+	if (current->z_min > y_min)
+	{
+		current->z_min = y_min;
+	}
+}
+
 Node* Rtree::MinimalResize(Node* current, triangle trig)
 {
 	double MinimalDeltaVolume = INT_MAX;
@@ -119,6 +139,25 @@ Node* Rtree::MinimalResize(Node* current, triangle trig)
 		}
 	}
 	return current->childs[indexOfChild];
+}
+
+Node* Rtree::MinimalResizeRect(Node* current, double x_max, double y_max, double z_max, double x_min, double y_min, double z_min)
+{
+	double MinimalDeltaVolume = INT_MAX;
+	int indexofChild;
+	for (int i = 0; i < current->childs.size(); i++)
+	{
+		Node* temp = current->childs[i];
+		double PreviousVolume = getVolume(temp);
+		AdjustBoundsRect(temp, x_max, x_min, y_max, y_min, z_max, z_min);
+		double NewVolume = getVolume(temp);
+		if (MinimalDeltaVolume > NewVolume - PreviousVolume)
+		{
+			MinimalDeltaVolume = NewVolume - PreviousVolume;
+			indexofChild = i;
+		}
+	}
+	return current->childs[indexofChild]
 }
 
 double Rtree::getVolume(Node* current)
@@ -183,7 +222,14 @@ vector<Node> Rtree::LinearSplit(vector<triangle> trigs)
 	return SplitNodes;
 }
 
-vector<Node> Rtree::LinearSplitNodes(vector<Node*> Nodes)
+vector<Node> Rtree::LinearSplitNodes(vector<Node> Spleet, Node* current)
 {
-
+	vector<Node> SplitNodes(2);
+	for (int i = 0; i < Spleet.size(); i++)
+	{
+		SplitNodes[0].childs[i] = &Spleet[i];
+		AdjustBoundsRect(&SplitNodes[0], SplitNodes[0].childs[i]->x_max, SplitNodes[0].childs[i]->x_min, SplitNodes[0].childs[i]->y_max, SplitNodes[0].childs[i]->y_min, SplitNodes[0].childs[i]->z_max, SplitNodes[0].childs[i]->z_min);
+	}
+	SplitNodes[1].childs[0] = current;
+	return SplitNodes;
 }
