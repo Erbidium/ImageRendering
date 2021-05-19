@@ -255,7 +255,7 @@ bool Rtree::findIntersectionInTree(vector3d rayOrigin, vector3d rayVector, vecto
 	{
 		for(int i=0;(i<current->childs.size())&&(!finished);i++)
 		{
-			bool wasIntersectionWithRect=intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, current);
+			bool wasIntersectionWithRect=intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, current->childs[i]);
 			if(wasIntersectionWithRect)
 				findIntersectionInTree(rayOrigin, rayVector, outIntersectionPoint, current->childs[i], finished);
 		}
@@ -272,7 +272,7 @@ vector<Node*> Rtree::LinearSplitNodes(vector<Node*> Spleet, Node* current)
 		SplitNodes[0]->childs.push_back(Spleet[i]);
 		AdjustBoundsRect(SplitNodes[0], SplitNodes[0]->childs[i]->x_max, SplitNodes[0]->childs[i]->x_min, SplitNodes[0]->childs[i]->y_max, SplitNodes[0]->childs[i]->y_min, SplitNodes[0]->childs[i]->z_max, SplitNodes[0]->childs[i]->z_min);
 	}
-	SplitNodes[1]->childs[0] = current;
+	SplitNodes[1]->childs.push_back(current);
 	AdjustBoundsRect(SplitNodes[1], SplitNodes[1]->childs[0]->x_max, SplitNodes[1]->childs[0]->x_min, SplitNodes[1]->childs[0]->y_max, SplitNodes[1]->childs[0]->y_min, SplitNodes[1]->childs[0]->z_max, SplitNodes[1]->childs[0]->z_min);
 	return SplitNodes;
 	////Rework LinearSplitNodes and optimally divide Nodes of rtree

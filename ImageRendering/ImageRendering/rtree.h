@@ -11,7 +11,7 @@ class Rtree
 	bool findIntersectionInTree(vector3d rayOrigin, vector3d rayVector, vector3d& outIntersectionPoint, Node * current, bool&finished);
 public:
     Rtree() { root = new Node; }
-	~Rtree(){ delete root; }
+	//~Rtree(){ delete root; }
     void insert(triangle);
 	bool intersectionOfRayAnd3Dmodel(vector3d rayOrigin, vector3d rayVector, vector3d& outIntersectionPoint);
     std::vector<Node*> ChooseLeaf(Node*, triangle);
