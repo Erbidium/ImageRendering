@@ -4,7 +4,7 @@
 
 struct Node
 {
-	Node():x_max(0),x_min(INT_MAX),y_max(0),y_min(INT_MAX), z_max(0), z_min(INT_MAX){}
+	Node():x_max(INT_MIN),x_min(INT_MAX),y_max(INT_MIN),y_min(INT_MAX), z_max(INT_MIN), z_min(INT_MAX){}
 	~Node()
 	{
 		for(int i=0;i<childs.size();i++)

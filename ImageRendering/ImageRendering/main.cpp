@@ -44,5 +44,5 @@ int main()
 			}
 		}
 	}
-	//WorkWithBMP::createBMPImage(heightOfScreen, widthOfScreen, plane.pixels);
+	WorkWithBMP::createBMPImage(heightOfScreen, widthOfScreen, plane.pixels);
 }

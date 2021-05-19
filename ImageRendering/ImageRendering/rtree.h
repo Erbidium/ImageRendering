@@ -6,7 +6,6 @@
 class Rtree
 {
     const int maxEntries = 4;
-    const int minEntries = 2;
     const int maxNumberOfLeafs = 5;
     Node* root;
 	bool findIntersectionInTree(vector3d rayOrigin, vector3d rayVector, vector3d& outIntersectionPoint, Node * current, bool&finished);

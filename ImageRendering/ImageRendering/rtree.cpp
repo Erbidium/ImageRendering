@@ -6,6 +6,7 @@ using namespace std;
 void Rtree::insert(triangle trig)
 {
 	vector<Node*> splitNodes = ChooseLeaf(this->root, trig);
+	AdjustBounds(root, trig);
 	if (splitNodes.size() > 0)
 	{
 		Node *newRoot=new Node;
@@ -13,9 +14,9 @@ void Rtree::insert(triangle trig)
 		for (int i = 0; i < splitNodes.size(); i++)
 		{
 			root->childs.push_back(splitNodes[i]);
+			AdjustBoundsRect(root, root->childs[i]->x_max, root->childs[i]->x_min, root->childs[i]->y_max, root->childs[i]->y_min, root->childs[i]->z_max, root->childs[i]->z_min);
 		}
 	}
-	AdjustBounds(root, trig);
 }
 
 bool Rtree::intersectionOfRayAnd3Dmodel(vector3d rayOrigin, vector3d rayVector, vector3d& outIntersectionPoint)
@@ -272,6 +273,7 @@ vector<Node*> Rtree::LinearSplitNodes(vector<Node*> Spleet, Node* current)
 		AdjustBoundsRect(SplitNodes[0], SplitNodes[0]->childs[i]->x_max, SplitNodes[0]->childs[i]->x_min, SplitNodes[0]->childs[i]->y_max, SplitNodes[0]->childs[i]->y_min, SplitNodes[0]->childs[i]->z_max, SplitNodes[0]->childs[i]->z_min);
 	}
 	SplitNodes[1]->childs[0] = current;
+	AdjustBoundsRect(SplitNodes[1], SplitNodes[1]->childs[0]->x_max, SplitNodes[1]->childs[0]->x_min, SplitNodes[1]->childs[0]->y_max, SplitNodes[1]->childs[0]->y_min, SplitNodes[1]->childs[0]->z_max, SplitNodes[1]->childs[0]->z_min);
 	return SplitNodes;
 	////Rework LinearSplitNodes and optimally divide Nodes of rtree
 }
