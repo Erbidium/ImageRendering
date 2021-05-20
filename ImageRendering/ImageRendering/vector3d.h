@@ -22,4 +22,5 @@ public:
 	bool operator>=(vector3d a)const;
 	vector3d crossProduct(vector3d a) const;
 	double getLength();
+	double findCos(vector3d b);
 };

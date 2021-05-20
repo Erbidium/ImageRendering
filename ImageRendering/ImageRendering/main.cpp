@@ -56,6 +56,7 @@ int main()
 	//cout << triangles[triangles.size()-1].getVertex1().getX();
 	vector3d cameraPosition(0, -1, 0);
 	vector3d cameraDirection(0, 1, 0);
+	vector3d lightPosition(0, 1,0 );
 	//triangle triangleOnScene({10, 4, 0}, {10, -4, 0}, {10, 0, 4});
 	int widthOfScreen=720, heightOfScreen=720;
 	int counter=0;
@@ -72,9 +73,12 @@ int main()
 			
 			if(wasIntersection==true)
 			{
-				plane.pixels[i][j].B=255;
-				plane.pixels[i][j].G=255;
-				plane.pixels[i][j].R=255;
+				vector3d lightRay = intersectionPoint - lightPosition;
+				double cosAlpha = lightRay.findCos(triangles[k].getNormal());
+				//cout << "alpha:" << cosAlpha;
+				plane.pixels[i][j].B = abs(cosAlpha)* 255;
+				plane.pixels[i][j].G= abs(cosAlpha) * 255;
+				plane.pixels[i][j].R= abs(cosAlpha) * 255;
 			}
 			else
 			{
