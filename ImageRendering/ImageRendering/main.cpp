@@ -64,17 +64,18 @@ int main()
 	vector<vector<vector3d>> pixelsInWorld=plane.getPixelsCoordinatesInWorld();
 	vector3d intersectionPoint;
 	vector3d directionOfRay;
+	triangle intersectedTriangle;
 	for(int i=0;i<heightOfScreen;i++)
 	{
 		for(int j=0;j<widthOfScreen;j++)
 		{
 			directionOfRay=pixelsInWorld[i][j]-cameraPosition;
-			bool wasIntersection=treeOfModel.intersectionOfRayAnd3Dmodel(cameraPosition, directionOfRay, intersectionPoint);
+			bool wasIntersection=treeOfModel.intersectionOfRayAnd3Dmodel(cameraPosition, directionOfRay, intersectionPoint, intersectedTriangle);
 			
 			if(wasIntersection==true)
 			{
 				vector3d lightRay = intersectionPoint - lightPosition;
-				double cosAlpha = lightRay.findCos(triangles[k].getNormal());
+				double cosAlpha = lightRay.findCos(intersectedTriangle.getNormal());
 				//cout << "alpha:" << cosAlpha;
 				plane.pixels[i][j].B = abs(cosAlpha)* 255;
 				plane.pixels[i][j].G= abs(cosAlpha) * 255;

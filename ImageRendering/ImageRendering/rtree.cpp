@@ -46,14 +46,14 @@ void Rtree::insert(triangle trig)
 	}
 }
 
-bool Rtree::intersectionOfRayAnd3Dmodel(vector3d rayOrigin, vector3d rayVector, vector3d& outIntersectionPoint)
+bool Rtree::intersectionOfRayAnd3Dmodel(vector3d rayOrigin, vector3d rayVector, vector3d& outIntersectionPoint, triangle& intersectedTriangle)
 {
 	bool finished=false;
 	//return intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, root);
 	if(!intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, root))
 		return false;
 	else
-		return findIntersectionInTree(rayOrigin, rayVector, outIntersectionPoint, root, finished);
+		return findIntersectionInTree(rayOrigin, rayVector, outIntersectionPoint, root, finished, intersectedTriangle);
 }
 
 vector<Node*> Rtree::ChooseLeaf(Node* current, triangle trig)
@@ -294,7 +294,7 @@ vector<Node*> Rtree::LinearSplit(vector<triangle> trigs)
 	return SplitNodes;
 }
 
-bool Rtree::findIntersectionInTree(vector3d rayOrigin, vector3d rayVector, vector3d& outIntersectionPoint, Node * current, bool&finished)
+bool Rtree::findIntersectionInTree(vector3d rayOrigin, vector3d rayVector, vector3d& outIntersectionPoint, Node * current, bool&finished, triangle& intersectedTriangle)
 {
 	if(current->childs.empty())
 	{
@@ -302,6 +302,7 @@ bool Rtree::findIntersectionInTree(vector3d rayOrigin, vector3d rayVector, vecto
 		{
 			if(intersectionChecker::rayIntersectsTriangle(rayOrigin, rayVector, &(current->triangles[i]), outIntersectionPoint))
 			{
+				intersectedTriangle=current->triangles[i];
 				finished=true;
 				break;
 			}
@@ -314,7 +315,7 @@ bool Rtree::findIntersectionInTree(vector3d rayOrigin, vector3d rayVector, vecto
 		{
 			bool wasIntersectionWithRect=intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, current->childs[i]);
 			if(wasIntersectionWithRect)
-				findIntersectionInTree(rayOrigin, rayVector, outIntersectionPoint, current->childs[i], finished);
+				findIntersectionInTree(rayOrigin, rayVector, outIntersectionPoint, current->childs[i], finished, intersectedTriangle);
 		}
 		
 		return finished;
