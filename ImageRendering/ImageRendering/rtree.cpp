@@ -130,7 +130,7 @@ vector<Node*> Rtree::DoInsert(Node* current, triangle trig)
 
 void Rtree::AdjustBounds(Node* current, triangle trig)
 {
-	double eps=0.001;
+	double eps=0.0000001;
 	if (current->x_max < trig.getX_max())
 	{
 		current->x_max = trig.getX_max()+eps;
@@ -159,30 +159,29 @@ void Rtree::AdjustBounds(Node* current, triangle trig)
 
 void Rtree::AdjustBoundsRect(Node* current, double x_max, double x_min, double y_max, double y_min, double z_max, double z_min)
 {
-	double eps=0.001;
 	if (current->x_max < x_max)
 	{
-		current->x_max = x_max+eps;
+		current->x_max = x_max;
 	}
 	if (current->y_max < y_max)
 	{
-		current->y_max = y_max+eps;
+		current->y_max = y_max;
 	}
 	if (current->z_max < z_max)
 	{
-		current->z_max = z_max+eps;
+		current->z_max = z_max;
 	}
 	if (current->x_min > x_min)
 	{
-		current->x_min = x_min-eps;
+		current->x_min = x_min;
 	}
 	if (current->y_min > y_min)
 	{
-		current->y_min = y_min-eps;
+		current->y_min = y_min;
 	}
 	if (current->z_min > y_min)
 	{
-		current->z_min = y_min-eps;
+		current->z_min = y_min;
 	}
 }
 

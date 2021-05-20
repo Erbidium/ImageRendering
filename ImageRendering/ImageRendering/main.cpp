@@ -54,10 +54,10 @@ int main()
 		outFile<<endl;
 	}*/
 	//cout << triangles[triangles.size()-1].getVertex1().getX();
-	vector3d cameraPosition(0, -3, 0);
+	vector3d cameraPosition(0, -1, 0);
 	vector3d cameraDirection(0, 1, 0);
 	//triangle triangleOnScene({10, 4, 0}, {10, -4, 0}, {10, 0, 4});
-	int widthOfScreen=2000, heightOfScreen=2000;
+	int widthOfScreen=720, heightOfScreen=720;
 	int counter=0;
 	projectionPlane plane(widthOfScreen, heightOfScreen, cameraPosition+cameraDirection);
 	vector<vector<vector3d>> pixelsInWorld=plane.getPixelsCoordinatesInWorld();

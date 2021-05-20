@@ -1,5 +1,7 @@
-﻿#include "intersectionChecker.h"
+#include "intersectionChecker.h"
+#include <cmath>
 
+using namespace std;
 
 bool intersectionChecker::rayIntersectsTriangle(vector3d rayOrigin, vector3d rayVector, triangle* inTriangle, vector3d& outIntersectionPoint)
 {
