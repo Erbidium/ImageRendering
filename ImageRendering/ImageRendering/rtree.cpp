@@ -7,20 +7,24 @@ using namespace std;
 
 int globalCounter=0;
 
-void Rtree::countTrigs(int &number, Node * current)
+void Rtree::countTrigs(int &number, Node*current, std::vector<triangle>&trigs)
 {
 	if(current!=nullptr)
 	{
 		if(current->childs.empty())
 		{
 			number+=current->triangles.size();
+			for(int i=0;i<current->triangles.size();i++)
+			{
+				trigs.push_back(current->triangles[i]);
+			}
 			//cout<<"Did sum "<<number<<endl;
 		}
 		else
 		{
 			for(int i=0;i<current->childs.size();i++)
 			{
-				countTrigs(number, current->childs[i]);
+				countTrigs(number, current->childs[i], trigs);
 			}
 		}
 	}
@@ -304,10 +308,10 @@ bool Rtree::findIntersectionInTree(vector3d rayOrigin, vector3d rayVector, vecto
 	}
 }
 
-int Rtree::count()
+int Rtree::count(vector<triangle>&trigs)
 {
 	int number=0;
-	countTrigs(number, root);
+	countTrigs(number, root, trigs);
 	return number;
 }
 
@@ -321,7 +325,13 @@ vector<Node*> Rtree::LinearSplitNodes(vector<Node*> Spleet, Node* current)
 		SplitNodes[0]->childs.push_back(Spleet[i]);
 		AdjustBoundsRect(SplitNodes[0], SplitNodes[0]->childs[i]->x_max, SplitNodes[0]->childs[i]->x_min, SplitNodes[0]->childs[i]->y_max, SplitNodes[0]->childs[i]->y_min, SplitNodes[0]->childs[i]->z_max, SplitNodes[0]->childs[i]->z_min);
 	}
-	for (int i = 0; i < current->childs.size(); i++)
+	int i=current->childs.size()-2;
+	SplitNodes[0]->childs.push_back(current->childs[i]);
+		AdjustBoundsRect(SplitNodes[0], SplitNodes[0]->childs[i]->x_max, SplitNodes[0]->childs[i]->x_min, SplitNodes[0]->childs[i]->y_max, SplitNodes[0]->childs[i]->y_min, SplitNodes[0]->childs[i]->z_max, SplitNodes[0]->childs[i]->z_min);
+	i++;
+	SplitNodes[0]->childs.push_back(current->childs[i]);
+		AdjustBoundsRect(SplitNodes[0], SplitNodes[0]->childs[i]->x_max, SplitNodes[0]->childs[i]->x_min, SplitNodes[0]->childs[i]->y_max, SplitNodes[0]->childs[i]->y_min, SplitNodes[0]->childs[i]->z_max, SplitNodes[0]->childs[i]->z_min);
+	for (int i = 0; i < current->childs.size()-2; i++)
 	{
 		SplitNodes[1]->childs.push_back(current->childs[i]);
 		AdjustBoundsRect(SplitNodes[1], current->childs[i]->x_max, current->childs[i]->x_min, current->childs[i]->y_max, current->childs[i]->y_min, current->childs[i]->z_max, current->childs[i]->z_min);

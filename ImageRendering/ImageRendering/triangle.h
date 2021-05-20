@@ -3,14 +3,9 @@
 
 class triangle
 {
-public:
-	static int index;
-private:
 	vector3d vertex1;
 	vector3d vertex2;
 	vector3d vertex3;
-	int trigIndex;
-	
 public:
 	triangle(vector3d, vector3d, vector3d);
 	triangle(){}

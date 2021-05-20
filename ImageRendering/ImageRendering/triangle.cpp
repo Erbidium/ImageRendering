@@ -3,7 +3,6 @@
 triangle::triangle(vector3d newVertex1, vector3d newVertex2, vector3d newVertex3):
 vertex1(newVertex1),vertex2(newVertex2),vertex3(newVertex3)
 {
-	trigIndex=++index;
 }
 
 vector3d triangle::getVertex1() const

@@ -6,10 +6,20 @@
 #include "fileReader.h"
 #include "Rtree.h"
 #include <iostream>
+#include <fstream>
+/*
+bool operator==(triangle a, triangle b)
+{
+	if(((a.getVertex1().getX()==b.getVertex1().getX())&&(a.getVertex1().getY()==b.getVertex1().getY())&&(a.getVertex1().getZ()==b.getVertex1().getZ()))&&
+       ((a.getVertex2().getX()==b.getVertex2().getX())&&(a.getVertex2().getY()==b.getVertex2().getY())&&(a.getVertex2().getZ()==b.getVertex2().getZ()))&&
+	   ((a.getVertex3().getX()==b.getVertex3().getX())&&(a.getVertex3().getY()==b.getVertex3().getY())&&(a.getVertex3().getZ()==b.getVertex3().getZ()))
+		)
+		return true;
+	else
+		return false;
+}*/
 
 using namespace std;
-
-int triangle::index = 0;
 
 int main()
 {
@@ -19,7 +29,29 @@ int main()
 	{
 		treeOfModel.insert(triangles[i]);
 	}
-	cout<<"number of Triangles: "<<treeOfModel.count()<<endl;
+	/*vector<triangle> gatheredTriangles;
+	cout<<"number of Triangles: "<<treeOfModel.count(gatheredTriangles)<<endl;
+	cout<<"trigs size: "<<gatheredTriangles.size()<<endl;
+	for(int i=0;i<gatheredTriangles.size()*1;i++)
+	{
+		for(int j=i+1;j<gatheredTriangles.size();j++)
+		{
+			if(gatheredTriangles[i]==gatheredTriangles[j])
+			{
+				cout<<"Yes1"<<endl;
+				break;
+			}
+		}
+	}*/
+	/*ofstream outFile("out.txt");
+	for(int i=0;i<gatheredTriangles.size();i++)
+	{
+		triangle trig=gatheredTriangles[i];
+		outFile<<trig.getVertex1().getX()<<" "<<trig.getVertex1().getY()<<" "<<trig.getVertex1().getZ()<<endl;
+		outFile<<trig.getVertex2().getX()<<" "<<trig.getVertex2().getY()<<" "<<trig.getVertex2().getZ()<<endl;
+		outFile<<trig.getVertex3().getX()<<" "<<trig.getVertex3().getY()<<" "<<trig.getVertex3().getZ()<<endl;
+		outFile<<endl;
+	}*/
 	//cout << triangles[triangles.size()-1].getVertex1().getX();
 	vector3d cameraPosition(0, -1, 0);
 	vector3d cameraDirection(0, 1, 0);
