@@ -1,4 +1,6 @@
 #pragma once
+#include <iostream>
+
 #include "triangle.h"
 #include <vector>
 
@@ -11,6 +13,21 @@ struct Node
 		{
 			delete childs[i];
 		}
+	}
+	Node* operator=(Node* current)
+	{
+		//std::cout<<"operator called\n";
+		childs=current->childs;
+		triangles=current->triangles;
+		x_max=current->x_max;
+		x_min=current->x_min;
+
+		y_max=current->y_max;
+		y_min=current->y_min;
+		
+		z_max=current->z_max;
+		z_min=current->z_min;
+		return this;
 	}
 	void setDefaultRect()
 	{

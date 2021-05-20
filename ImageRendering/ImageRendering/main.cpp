@@ -29,9 +29,10 @@ int main()
 	{
 		treeOfModel.insert(triangles[i]);
 	}
-	/*vector<triangle> gatheredTriangles;
+	cout<<"build!"<<endl;
+	vector<triangle> gatheredTriangles;
 	cout<<"number of Triangles: "<<treeOfModel.count(gatheredTriangles)<<endl;
-	cout<<"trigs size: "<<gatheredTriangles.size()<<endl;
+	cout<<"trigs size: "<<gatheredTriangles.size()<<endl;/*
 	for(int i=0;i<gatheredTriangles.size()*1;i++)
 	{
 		for(int j=i+1;j<gatheredTriangles.size();j++)
@@ -53,18 +54,22 @@ int main()
 		outFile<<endl;
 	}*/
 	//cout << triangles[triangles.size()-1].getVertex1().getX();
-	vector3d cameraPosition(0, -1, 0);
+	vector3d cameraPosition(0, -3, 0);
 	vector3d cameraDirection(0, 1, 0);
 	//triangle triangleOnScene({10, 4, 0}, {10, -4, 0}, {10, 0, 4});
-	int widthOfScreen=100, heightOfScreen=100;
+	int widthOfScreen=2000, heightOfScreen=2000;
 	int counter=0;
 	projectionPlane plane(widthOfScreen, heightOfScreen, cameraPosition+cameraDirection);
+	vector<vector<vector3d>> pixelsInWorld=plane.getPixelsCoordinatesInWorld();
+	vector3d intersectionPoint;
+	vector3d directionOfRay;
 	for(int i=0;i<heightOfScreen;i++)
 	{
 		for(int j=0;j<widthOfScreen;j++)
 		{
-			vector3d intersectionPoint, directionOfRay=plane.getPixelsCoordinatesInWorld()[i][j]-cameraPosition;
+			directionOfRay=pixelsInWorld[i][j]-cameraPosition;
 			bool wasIntersection=treeOfModel.intersectionOfRayAnd3Dmodel(cameraPosition, directionOfRay, intersectionPoint);
+			
 			if(wasIntersection==true)
 			{
 				plane.pixels[i][j].B=255;

@@ -49,6 +49,7 @@ void Rtree::insert(triangle trig)
 bool Rtree::intersectionOfRayAnd3Dmodel(vector3d rayOrigin, vector3d rayVector, vector3d& outIntersectionPoint)
 {
 	bool finished=false;
+	//return intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, root);
 	if(!intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, root))
 		return false;
 	else
@@ -67,8 +68,8 @@ vector<Node*> Rtree::ChooseLeaf(Node* current, triangle trig)
 		}
 		else
 		{
-			current->triangles.clear();
-			current->setDefaultRect();
+			//current->triangles.clear();
+			//current->setDefaultRect();
 		}
 		return SplitNodes;
 	}
@@ -90,7 +91,7 @@ vector<Node*> Rtree::ChooseLeaf(Node* current, triangle trig)
 			}
 			//delete current->childs[indexOfOptimal];
 			//current->childs[indexOfOptimal]=nullptr;
-			current->childs.erase(current->childs.begin()+indexOfOptimal);
+			current->childs.erase(current->childs.begin()+indexOfOptimal);////
 			if (current->childs.size() < maxEntries)
 			{
 				for(int i=0;i<SplitNodes.size();i++)
@@ -115,6 +116,7 @@ vector<Node*> Rtree::DoInsert(Node* current, triangle trig)
 	if (current->triangles.size() < maxNumberOfLeafs)
 	{
 		current->triangles.push_back(trig);
+		//AdjustBounds(current, trig);
 	}
 	else
 	{
@@ -128,7 +130,7 @@ vector<Node*> Rtree::DoInsert(Node* current, triangle trig)
 
 void Rtree::AdjustBounds(Node* current, triangle trig)
 {
-	double eps=0.1;
+	double eps=0.001;
 	if (current->x_max < trig.getX_max())
 	{
 		current->x_max = trig.getX_max()+eps;
@@ -157,7 +159,7 @@ void Rtree::AdjustBounds(Node* current, triangle trig)
 
 void Rtree::AdjustBoundsRect(Node* current, double x_max, double x_min, double y_max, double y_min, double z_max, double z_min)
 {
-	double eps=0.1;
+	double eps=0.001;
 	if (current->x_max < x_max)
 	{
 		current->x_max = x_max+eps;
@@ -190,7 +192,8 @@ Node* Rtree::MinimalResize(Node* current, triangle trig)
 	int indexOfChild;
 	for (int i = 0; i < current->childs.size(); i++)
 	{
-		Node* temp = current->childs[i];
+		Node *temp = new Node;
+		*temp=current->childs[i];
 		double PreviousVolume = getVolume(temp);
 		AdjustBounds(temp, trig);
 		double NewVolume = getVolume(temp);
@@ -209,7 +212,8 @@ Node* Rtree::MinimalResizeRect(Node* current, double x_max, double y_max, double
 	int indexofChild;
 	for (int i = 0; i < current->childs.size(); i++)
 	{
-		Node* temp = current->childs[i];
+		Node *temp=new Node;
+		*temp=current->childs[i];
 		double PreviousVolume = getVolume(temp);
 		AdjustBoundsRect(temp, x_max, x_min, y_max, y_min, z_max, z_min);
 		double NewVolume = getVolume(temp);
@@ -266,8 +270,10 @@ vector<Node*> Rtree::LinearSplit(vector<triangle> trigs)
 		double oldVolume1 = getVolume(leaf1);
 		double oldVolume2 = getVolume(leaf2);
 		triangle currentTriangle = trigs[i];
-		Node* tempLeaf1 = leaf1;
-		Node* tempLeaf2 = leaf2;
+		Node *tempLeaf1 = new Node;
+		*tempLeaf1=leaf1;
+		Node *tempLeaf2 = new Node;
+		*tempLeaf2=leaf2;
 		AdjustBounds(tempLeaf1, trigs[i]);
 		double VoulumeOfFirst = getVolume(tempLeaf1);
 		AdjustBounds(tempLeaf2, trigs[i]);
@@ -391,8 +397,10 @@ vector<Node*> Rtree::LinearSplitNodes(vector<Node*> Spleet, Node* current)
 	}
 	for (int i = 0; i < nodesToSplit.size(); i++)
 	{
-		Node* tempChild1 = Child1;
-		Node* tempChild2 = Child2;
+		Node *tempChild1 = new Node;
+		*tempChild1=Child1;
+		Node *tempChild2 = new Node;
+		*tempChild2=Child2;
 		double OldVolume1 = getVolume(Child1);
 		double OldVolume2 = getVolume(Child2);
 		AdjustBoundsRect(tempChild1, nodesToSplit[i]->x_max, nodesToSplit[i]->x_min, nodesToSplit[i]->y_max, nodesToSplit[i]->y_min, nodesToSplit[i]->z_max, nodesToSplit[i]->z_min);
