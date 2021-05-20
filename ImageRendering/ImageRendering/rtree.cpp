@@ -49,9 +49,9 @@ void Rtree::insert(triangle trig)
 bool Rtree::intersectionOfRayAnd3Dmodel(vector3d rayOrigin, vector3d rayVector, vector3d& outIntersectionPoint)
 {
 	bool finished=false;
-	if(!intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, root))
-		return false;
-	else
+	//if(!intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, root))
+	//	return false;
+	//else
 		return findIntersectionInTree(rayOrigin, rayVector, outIntersectionPoint, root, finished);
 }
 
@@ -283,24 +283,22 @@ bool Rtree::findIntersectionInTree(vector3d rayOrigin, vector3d rayVector, vecto
 {
 	if(current->childs.empty())
 	{
-		bool wasIntersection=false;
-		for(int i=0;(i<current->triangles.size())&&(!wasIntersection);i++)
+		for(int i=0;(i<current->triangles.size())&&(!finished);i++)
 		{
-			wasIntersection=intersectionChecker::rayIntersectsTriangle(rayOrigin, rayVector, &(current->triangles[i]), outIntersectionPoint);
-			if(wasIntersection==true)
+			if(intersectionChecker::rayIntersectsTriangle(rayOrigin, rayVector, &(current->triangles[i]), outIntersectionPoint))
 			{
 				finished=true;
 				break;
 			}
 		}
-		return wasIntersection;
+		return finished;
 	}
 	else
 	{
 		for(int i=0;(i<current->childs.size())&&(!finished);i++)
 		{
-			bool wasIntersectionWithRect=intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, current->childs[i]);
-			if(wasIntersectionWithRect)
+			//bool wasIntersectionWithRect=intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, current->childs[i]);
+			//if(wasIntersectionWithRect)
 				findIntersectionInTree(rayOrigin, rayVector, outIntersectionPoint, current->childs[i], finished);
 		}
 		

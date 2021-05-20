@@ -56,7 +56,7 @@ int main()
 	vector3d cameraPosition(0, -1, 0);
 	vector3d cameraDirection(0, 1, 0);
 	//triangle triangleOnScene({10, 4, 0}, {10, -4, 0}, {10, 0, 4});
-	int widthOfScreen=100, heightOfScreen=100;
+	int widthOfScreen=50, heightOfScreen=50;
 	int counter=0;
 	projectionPlane plane(widthOfScreen, heightOfScreen, cameraPosition+cameraDirection);
 	for(int i=0;i<heightOfScreen;i++)
