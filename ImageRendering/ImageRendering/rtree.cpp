@@ -179,9 +179,9 @@ void Rtree::AdjustBoundsRect(Node* current, double x_max, double x_min, double y
 	{
 		current->y_min = y_min;
 	}
-	if (current->z_min > y_min)
+	if (current->z_min > z_min)
 	{
-		current->z_min = y_min;
+		current->z_min = z_min;
 	}
 }
 

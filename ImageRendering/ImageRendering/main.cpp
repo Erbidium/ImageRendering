@@ -58,7 +58,7 @@ int main()
 	vector3d cameraDirection(0, 1, 0);
 	vector3d lightPosition(0, 1,0 );
 	//triangle triangleOnScene({10, 4, 0}, {10, -4, 0}, {10, 0, 4});
-	int widthOfScreen=720, heightOfScreen=720;
+	int widthOfScreen=1500, heightOfScreen=1500;
 	int counter=0;
 	projectionPlane plane(widthOfScreen, heightOfScreen, cameraPosition+cameraDirection);
 	vector<vector<vector3d>> pixelsInWorld=plane.getPixelsCoordinatesInWorld();
