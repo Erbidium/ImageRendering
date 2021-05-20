@@ -49,9 +49,9 @@ void Rtree::insert(triangle trig)
 bool Rtree::intersectionOfRayAnd3Dmodel(vector3d rayOrigin, vector3d rayVector, vector3d& outIntersectionPoint)
 {
 	bool finished=false;
-	//if(!intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, root))
-	//	return false;
-	//else
+	if(!intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, root))
+		return false;
+	else
 		return findIntersectionInTree(rayOrigin, rayVector, outIntersectionPoint, root, finished);
 }
 
@@ -66,7 +66,10 @@ vector<Node*> Rtree::ChooseLeaf(Node* current, triangle trig)
 			AdjustBounds(current, trig);
 		}
 		else
+		{
 			current->triangles.clear();
+			current->setDefaultRect();
+		}
 		return SplitNodes;
 	}
 	else
@@ -125,57 +128,59 @@ vector<Node*> Rtree::DoInsert(Node* current, triangle trig)
 
 void Rtree::AdjustBounds(Node* current, triangle trig)
 {
+	double eps=0.1;
 	if (current->x_max < trig.getX_max())
 	{
-		current->x_max = trig.getX_max();
+		current->x_max = trig.getX_max()+eps;
 	}
 	if (current->y_max < trig.getY_max())
 	{
-		current->y_max = trig.getY_max();
+		current->y_max = trig.getY_max()+eps;
 	}
 	if (current->z_max < trig.getZ_max())
 	{
-		current->z_max = trig.getZ_max();
+		current->z_max = trig.getZ_max()+eps;
 	}
 	if (current->x_min > trig.getX_min())
 	{
-		current->x_min = trig.getX_min();
+		current->x_min = trig.getX_min()-eps;
 	}
 	if (current->y_min > trig.getY_min())
 	{
-		current->y_min = trig.getY_min();
+		current->y_min = trig.getY_min()-eps;
 	}
 	if (current->z_min > trig.getZ_min())
 	{
-		current->z_min = trig.getZ_min();
+		current->z_min = trig.getZ_min()-eps;
 	}
 }
 
 void Rtree::AdjustBoundsRect(Node* current, double x_max, double x_min, double y_max, double y_min, double z_max, double z_min)
 {
+	double eps=0.1;
 	if (current->x_max < x_max)
 	{
-		current->x_max = x_max;
+		current->x_max = x_max+eps;
 	}
 	if (current->y_max < y_max)
 	{
-		current->y_max = y_max;
+		current->y_max = y_max+eps;
 	}
 	if (current->z_max < z_max)
 	{
-		current->z_max = z_max;
+		current->z_max = z_max+eps;
 	}
 	if (current->x_min > x_min)
 	{
-		current->x_min = x_min;
+		current->x_min = x_min-eps;
 	}
 	if (current->y_min > y_min)
 	{
-		current->y_min = y_min;
+		current->y_min = y_min-eps;
 	}
 	if (current->z_min > y_min)
 	{
-		current->z_min = y_min;
+		current->z_min = y_min-eps;
 	}
 }
 
@@ -297,8 +302,8 @@ bool Rtree::findIntersectionInTree(vector3d rayOrigin, vector3d rayVector, vecto
 	{
 		for(int i=0;(i<current->childs.size())&&(!finished);i++)
 		{
-			//bool wasIntersectionWithRect=intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, current->childs[i]);
-			//if(wasIntersectionWithRect)
+			bool wasIntersectionWithRect=intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, current->childs[i]);
+			if(wasIntersectionWithRect)
 				findIntersectionInTree(rayOrigin, rayVector, outIntersectionPoint, current->childs[i], finished);
 		}
 		
