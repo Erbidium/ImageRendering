@@ -263,19 +263,24 @@ vector<Node*> Rtree::LinearSplit(vector<triangle> trigs)
 	}
 	for (int i = 0; i < trigs.size(); i++)
 	{
+		double oldVolume1 = getVolume(leaf1);
+		double oldVolume2 = getVolume(leaf2);
 		triangle currentTriangle = trigs[i];
-		vector3d currentCenter = currentTriangle.getCenter();
-		double distanceToFirstLeaf = (currentCenter - leaf1Center).getLength();
-		double distanceToSecondLeaf = (currentCenter - leaf2Center).getLength();
-		if (distanceToFirstLeaf > distanceToSecondLeaf)
-		{
-			leaf1->triangles.push_back(currentTriangle);
-			AdjustBounds(leaf1, currentTriangle);
-		}
-		else
+		Node* tempLeaf1 = leaf1;
+		Node* tempLeaf2 = leaf2;
+		AdjustBounds(tempLeaf1, trigs[i]);
+		double VoulumeOfFirst = getVolume(tempLeaf1);
+		AdjustBounds(tempLeaf2, trigs[i]);
+		double VolumeOfSecondLeaf = getVolume(tempLeaf2);
+		if (VoulumeOfFirst - oldVolume1 > VolumeOfSecondLeaf - oldVolume2)
 		{
 			leaf2->triangles.push_back(currentTriangle);
 			AdjustBounds(leaf2, currentTriangle);
+		}
+		else
+		{
+			leaf1->triangles.push_back(currentTriangle);
+			AdjustBounds(leaf1, currentTriangle);
 		}
 	}
 	vector<Node*> SplitNodes;
@@ -318,6 +323,7 @@ int Rtree::count(vector<triangle>&trigs)
 	return number;
 }
 
+/*
 vector<Node*> Rtree::LinearSplitNodes(vector<Node*> Spleet, Node* current)
 {
 	vector<Node*> SplitNodes(2);
@@ -343,4 +349,68 @@ vector<Node*> Rtree::LinearSplitNodes(vector<Node*> Spleet, Node* current)
 	current->triangles.clear();
 	return SplitNodes;
 	////Rework LinearSplitNodes and optimally divide Nodes of rtree
+}
+*/
+
+vector<Node*> Rtree::LinearSplitNodes(vector<Node*> Spleet, Node* current)
+{
+	vector<Node*> SplitNodes(2);
+	SplitNodes[0] = new Node;
+	SplitNodes[1] = new Node;
+	vector<Node*> nodesToSplit = Spleet;
+	nodesToSplit.insert(nodesToSplit.end(), current->childs.begin(), current->childs.end());
+	int indexOfChild1 = 0, indexOfChild2 = 1;
+	double maxDistance = (nodesToSplit[indexOfChild1]->getBoxCenter() - nodesToSplit[indexOfChild2]->getBoxCenter()).getLength();
+	for (int i = 0; i < nodesToSplit.size(); i++)
+	{
+		for (int j = i + 1; j < nodesToSplit.size(); j++)
+		{
+			double tempDistance = (nodesToSplit[i]->getBoxCenter() - nodesToSplit[j]->getBoxCenter()).getLength();
+			if (tempDistance > maxDistance)
+			{
+				maxDistance = tempDistance;
+				indexOfChild1 = i;
+				indexOfChild2 = j;
+			}
+		}
+	}
+	Node* Child1 = new Node;
+	Child1->childs.push_back(nodesToSplit[indexOfChild1]);
+	AdjustBoundsRect(Child1, nodesToSplit[indexOfChild1]->x_max, nodesToSplit[indexOfChild1]->x_min, nodesToSplit[indexOfChild1]->y_max, nodesToSplit[indexOfChild1]->y_min, nodesToSplit[indexOfChild1]->z_max, nodesToSplit[indexOfChild1]->z_min);
+	Node* Child2 = new Node;
+	Child2->childs.push_back(nodesToSplit[indexOfChild2]);
+	AdjustBoundsRect(Child2, nodesToSplit[indexOfChild2]->x_max, nodesToSplit[indexOfChild2]->x_min, nodesToSplit[indexOfChild2]->y_max, nodesToSplit[indexOfChild2]->y_min, nodesToSplit[indexOfChild2]->z_max, nodesToSplit[indexOfChild2]->z_min);
+	nodesToSplit.erase(nodesToSplit.begin() + indexOfChild1);
+	if (indexOfChild1 > indexOfChild2)
+	{
+		nodesToSplit.erase(nodesToSplit.begin() + indexOfChild2);
+	}
+	else
+	{
+		nodesToSplit.erase(nodesToSplit.begin() + indexOfChild2 - 1);
+	}
+	for (int i = 0; i < nodesToSplit.size(); i++)
+	{
+		Node* tempChild1 = Child1;
+		Node* tempChild2 = Child2;
+		double OldVolume1 = getVolume(Child1);
+		double OldVolume2 = getVolume(Child2);
+		AdjustBoundsRect(tempChild1, nodesToSplit[i]->x_max, nodesToSplit[i]->x_min, nodesToSplit[i]->y_max, nodesToSplit[i]->y_min, nodesToSplit[i]->z_max, nodesToSplit[i]->z_min);
+		double VoulumeOfFirst = getVolume(tempChild1);
+		AdjustBoundsRect(tempChild2, nodesToSplit[i]->x_max, nodesToSplit[i]->x_min, nodesToSplit[i]->y_max, nodesToSplit[i]->y_min, nodesToSplit[i]->z_max, nodesToSplit[i]->z_min);
+		double VolumeOfSecondChild = getVolume(tempChild2);
+		if (VoulumeOfFirst - OldVolume1 > VolumeOfSecondChild - OldVolume2)
+		{
+			Child2->childs.push_back(nodesToSplit[i]);
+			AdjustBoundsRect(Child2, nodesToSplit[i]->x_max, nodesToSplit[i]->x_min, nodesToSplit[i]->y_max, nodesToSplit[i]->y_min, nodesToSplit[i]->z_max, nodesToSplit[i]->z_min);
+		}
+		else
+		{
+			Child1->childs.push_back(nodesToSplit[i]);
+			AdjustBoundsRect(Child1, nodesToSplit[i]->x_max, nodesToSplit[i]->x_min, nodesToSplit[i]->y_max, nodesToSplit[i]->y_min, nodesToSplit[i]->z_max, nodesToSplit[i]->z_min);
+		}
+	}
+	SplitNodes[0] = Child1;
+	SplitNodes[1] = Child2;
+	return SplitNodes;
 }

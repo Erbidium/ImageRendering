@@ -23,6 +23,10 @@ struct Node
 		z_max=INT_MIN;
 		z_min=INT_MAX;
 	}
+	vector3d getBoxCenter()
+	{
+		return { (x_max + x_min) / 2, (y_max + y_min) / 2, (z_max + z_min) / 2 };
+	}
 	///replace INT_MAX with bool statements for initialized or not 3d rectangles!!!!
 	///INT_MIN for x_max and others!!!
 	std::vector<Node*> childs;
