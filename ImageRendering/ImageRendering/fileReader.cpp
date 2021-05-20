@@ -1,4 +1,7 @@
 #include "fileReader.h"
+#include <fstream>
+
+using namespace std;
 
 vector<triangle> fileReader::readObj(string nameOfFile)
 {

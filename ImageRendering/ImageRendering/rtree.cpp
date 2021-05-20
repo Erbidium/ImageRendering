@@ -1,7 +1,30 @@
 #include "Rtree.h"
 
+#include <iostream>
+
 #include "intersectionChecker.h"
 using namespace std;
+
+int globalCounter=0;
+
+void Rtree::countTrigs(int &number, Node * current)
+{
+	if(current!=nullptr)
+	{
+		if(current->childs.empty())
+		{
+			number+=current->triangles.size();
+			//cout<<"Did sum "<<number<<endl;
+		}
+		else
+		{
+			for(int i=0;i<current->childs.size();i++)
+			{
+				countTrigs(number, current->childs[i]);
+			}
+		}
+	}
+}
 
 void Rtree::insert(triangle trig)
 {
@@ -31,27 +54,43 @@ bool Rtree::intersectionOfRayAnd3Dmodel(vector3d rayOrigin, vector3d rayVector, 
 vector<Node*> Rtree::ChooseLeaf(Node* current, triangle trig)
 {
 	vector<Node*> SplitNodes;
-	if (current->childs.size() == 0)
+	if (current->childs.empty())
 	{
 		SplitNodes = DoInsert(current, trig);
-		if (SplitNodes.size() == 0)
+		if (SplitNodes.empty())
 		{
 			AdjustBounds(current, trig);
 		}
+		else
+			current->triangles.clear();
 		return SplitNodes;
 	}
 	else
 	{
-		SplitNodes = ChooseLeaf(MinimalResize(current, trig), trig);
+		Node * optimalNode=MinimalResize(current, trig);
+		SplitNodes = ChooseLeaf(optimalNode, trig);
 		AdjustBounds(current, trig);
 		if (SplitNodes.size() > 0)
 		{
+			int indexOfOptimal=0;
+			for(int i=0;i<current->childs.size();i++)
+			{
+				if(current->childs[i]==optimalNode)
+				{
+					indexOfOptimal=i;
+					break;
+				}
+			}
+			//delete current->childs[indexOfOptimal];
+			//current->childs[indexOfOptimal]=nullptr;
+			current->childs.erase(current->childs.begin()+indexOfOptimal);
 			if (current->childs.size() < maxEntries)
 			{
-				Node* newNode = new Node;
-				newNode->triangles.push_back(trig);
-				AdjustBounds(newNode, trig);
-				current->childs.push_back(newNode);
+				for(int i=0;i<SplitNodes.size();i++)
+				{
+					current->childs.push_back(SplitNodes[i]);
+					AdjustBoundsRect(current, SplitNodes[i]->x_max, SplitNodes[i]->x_min, SplitNodes[i]->y_max, SplitNodes[i]->y_min, SplitNodes[i]->z_max, SplitNodes[i]->z_min);
+				}
 				SplitNodes.clear();
 			}
 			else
@@ -75,6 +114,7 @@ vector<Node*> Rtree::DoInsert(Node* current, triangle trig)
 		vector<triangle> trigs = current->triangles;
 		trigs.push_back(trig);
 		SplitNodes = LinearSplit(trigs);
+		current->triangles.clear();
 	}
 	return SplitNodes;
 }
@@ -264,16 +304,30 @@ bool Rtree::findIntersectionInTree(vector3d rayOrigin, vector3d rayVector, vecto
 	}
 }
 
+int Rtree::count()
+{
+	int number=0;
+	countTrigs(number, root);
+	return number;
+}
+
 vector<Node*> Rtree::LinearSplitNodes(vector<Node*> Spleet, Node* current)
 {
-	vector<Node*> SplitNodes(2, new Node);
+	vector<Node*> SplitNodes(2);
+	SplitNodes[0]=new Node;
+	SplitNodes[1]=new Node;
 	for (int i = 0; i < Spleet.size(); i++)
 	{
 		SplitNodes[0]->childs.push_back(Spleet[i]);
 		AdjustBoundsRect(SplitNodes[0], SplitNodes[0]->childs[i]->x_max, SplitNodes[0]->childs[i]->x_min, SplitNodes[0]->childs[i]->y_max, SplitNodes[0]->childs[i]->y_min, SplitNodes[0]->childs[i]->z_max, SplitNodes[0]->childs[i]->z_min);
 	}
-	SplitNodes[1]->childs.push_back(current);
-	AdjustBoundsRect(SplitNodes[1], SplitNodes[1]->childs[0]->x_max, SplitNodes[1]->childs[0]->x_min, SplitNodes[1]->childs[0]->y_max, SplitNodes[1]->childs[0]->y_min, SplitNodes[1]->childs[0]->z_max, SplitNodes[1]->childs[0]->z_min);
+	for (int i = 0; i < current->childs.size(); i++)
+	{
+		SplitNodes[1]->childs.push_back(current->childs[i]);
+		AdjustBoundsRect(SplitNodes[1], current->childs[i]->x_max, current->childs[i]->x_min, current->childs[i]->y_max, current->childs[i]->y_min, current->childs[i]->z_max, current->childs[i]->z_min);
+	}
+	current->childs.clear();//
+	current->triangles.clear();
 	return SplitNodes;
 	////Rework LinearSplitNodes and optimally divide Nodes of rtree
 }

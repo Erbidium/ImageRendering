@@ -5,8 +5,11 @@
 #include "intersectionChecker.h"
 #include "fileReader.h"
 #include "Rtree.h"
+#include <iostream>
 
 using namespace std;
+
+int triangle::index = 0;
 
 int main()
 {
@@ -16,12 +19,12 @@ int main()
 	{
 		treeOfModel.insert(triangles[i]);
 	}
-	
+	cout<<"number of Triangles: "<<treeOfModel.count()<<endl;
 	//cout << triangles[triangles.size()-1].getVertex1().getX();
 	vector3d cameraPosition(0, -1, 0);
 	vector3d cameraDirection(0, 1, 0);
 	//triangle triangleOnScene({10, 4, 0}, {10, -4, 0}, {10, 0, 4});
-	int widthOfScreen=50, heightOfScreen=50;
+	int widthOfScreen=100, heightOfScreen=100;
 	int counter=0;
 	projectionPlane plane(widthOfScreen, heightOfScreen, cameraPosition+cameraDirection);
 	for(int i=0;i<heightOfScreen;i++)

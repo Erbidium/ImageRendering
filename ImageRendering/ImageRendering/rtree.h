@@ -12,6 +12,8 @@ class Rtree
 public:
     Rtree() { root = new Node; }
 	//~Rtree(){ delete root; }
+	int count();
+	void countTrigs(int &number, Node*current);
     void insert(triangle);
 	bool intersectionOfRayAnd3Dmodel(vector3d rayOrigin, vector3d rayVector, vector3d& outIntersectionPoint);
     std::vector<Node*> ChooseLeaf(Node*, triangle);
