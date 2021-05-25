@@ -75,10 +75,8 @@ int main()
 	projectionPlane plane(widthOfScreen, heightOfScreen, cameraPosition+cameraDirection, cameraDirection, cameraPosition);
 	vector<vector<vector3d>> pixelsInWorld=plane.getPixelsCoordinatesInWorld();
 	vector3d intersectionPoint;
-	vector3d intersectionPoint2;
 	vector3d directionOfRay;
 	triangle intersectedTriangle;
-	triangle intersectedTriangle2;
 	for(int i=0;i<heightOfScreen;i++)
 	{
 		for(int j=0;j<widthOfScreen;j++)
@@ -88,8 +86,7 @@ int main()
 			
 			if(wasIntersection==true)
 			{
-				bool wasIntersection2 = treeOfModel.intersectionOfRayAnd3Dmodel(lightPosition, intersectionPoint - lightPosition, intersectionPoint2, intersectedTriangle2);
-				if (intersectedTriangle == intersectedTriangle2)
+				if (!treeOfModel.intersectionOfLightRay(lightPosition, intersectionPoint - lightPosition, intersectionPoint, intersectedTriangle))
 				{
 					vector3d lightRay = intersectionPoint - lightPosition;
 					double cosAlpha = lightRay.findCos(intersectedTriangle.getNormal());
