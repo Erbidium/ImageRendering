@@ -56,6 +56,11 @@ bool Rtree::intersectionOfRayAnd3Dmodel(vector3d rayOrigin, vector3d rayVector, 
 		return findIntersectionInTree(rayOrigin, rayVector, outIntersectionPoint, root, wasInetersection, intersectedTriangle);
 }
 
+bool Rtree::intersectionOfLightRay(vector3d rayOrigin, vector3d rayVector, vector3d& intersectionPoint, triangle& intersectedTriangle)
+{
+		return findIntersectionLigthInTree(rayOrigin, rayVector, root, intersectionPoint, intersectedTriangle);
+}
+
 vector<Node*> Rtree::ChooseLeaf(Node* current, triangle trig)
 {
 	vector<Node*> SplitNodes;
@@ -333,6 +338,40 @@ bool Rtree::findIntersectionInTree(vector3d rayOrigin, vector3d rayVector, vecto
 		}
 		
 		return wasIntersection;
+	}
+}
+
+bool Rtree::findIntersectionLigthInTree(vector3d rayOrigin, vector3d rayVector, Node* current, vector3d& intersectionPoint, triangle &intersectedTriangle)
+{
+	bool triangleBefore = false;
+	if (current->childs.empty())
+	{
+		for (int i = 0; i < current->triangles.size() && !triangleBefore; i++)
+		{
+			vector3d tempIntersectionPoint;
+			if (intersectionChecker::rayIntersectsTriangle(rayOrigin, rayVector, &(current->triangles[i]), tempIntersectionPoint))
+			{
+				if (!(current->triangles[i] == intersectedTriangle))
+				{
+					double distanceOld = (rayOrigin - intersectionPoint).getLength();
+					double distanceNew = (rayOrigin - tempIntersectionPoint).getLength();
+					if (distanceNew < distanceOld)
+					{
+						triangleBefore = true;
+					}
+				}
+			}
+		}
+		return triangleBefore;
+	}
+	else
+	{
+		for (int i = 0; i < current->childs.size() && !triangleBefore; i++)
+		{
+			if (intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, current->childs[i]))
+				triangleBefore = findIntersectionLigthInTree(rayOrigin, rayVector, current->childs[i], intersectionPoint, intersectedTriangle);
+		}
+		return triangleBefore;
 	}
 }
 

@@ -16,6 +16,8 @@ public:
 	void countTrigs(int &number, Node*current, std::vector<triangle>&);
     void insert(triangle);
 	bool intersectionOfRayAnd3Dmodel(vector3d rayOrigin, vector3d rayVector, vector3d& outIntersectionPoint, triangle& intersectedTriangle);
+    bool intersectionOfLightRay(vector3d rayOrigin, vector3d rayVector, vector3d& intersectionpoint, triangle&);
+    bool findIntersectionLigthInTree(vector3d rayOrigin, vector3d rayVector, Node* current, vector3d& intersectionPoint, triangle&);
     std::vector<Node*> ChooseLeaf(Node*, triangle);
     std::vector<Node*> DoInsert(Node*, triangle);
     std::vector<Node*> LinearSplit(std::vector<triangle>);
