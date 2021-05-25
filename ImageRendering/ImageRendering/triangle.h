@@ -23,4 +23,5 @@ public:
 	double getX_min();
 	double getY_min();
 	double getZ_min();
+	bool operator==(triangle);
 };

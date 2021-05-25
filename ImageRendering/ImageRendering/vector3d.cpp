@@ -85,3 +85,8 @@ double vector3d::findCos(vector3d b)
 	return cosAlpha;
 }
 
+bool vector3d::operator==(vector3d second)
+{
+	return (this->getX() == second.getX() && this->getY() == second.getY() && this->getZ() == second.getZ());
+}
+

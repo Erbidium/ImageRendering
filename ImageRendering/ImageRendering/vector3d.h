@@ -23,4 +23,5 @@ public:
 	vector3d crossProduct(vector3d a) const;
 	double getLength();
 	double findCos(vector3d b);
+	bool operator==(vector3d second);
 };

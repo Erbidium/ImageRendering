@@ -58,15 +58,17 @@ int main()
 	//cout << triangles[triangles.size()-1].getVertex1().getX();
 	vector3d cameraPosition(0, -1, 0);
 	vector3d cameraDirection(0, 1, 0);
-	vector3d lightPosition(0, 1,0 );
+	vector3d lightPosition(0, -1, 0);
 	//triangle triangleOnScene({10, 4, 0}, {10, -4, 0}, {10, 0, 4});
-	int widthOfScreen=1500, heightOfScreen=1500;
+	int widthOfScreen=720, heightOfScreen=720;
 	int counter=0;
 	projectionPlane plane(widthOfScreen, heightOfScreen, cameraPosition+cameraDirection);
 	vector<vector<vector3d>> pixelsInWorld=plane.getPixelsCoordinatesInWorld();
 	vector3d intersectionPoint;
+	vector3d intersectionPoint2;
 	vector3d directionOfRay;
 	triangle intersectedTriangle;
+	triangle intersectedTriangle2;
 	for(int i=0;i<heightOfScreen;i++)
 	{
 		for(int j=0;j<widthOfScreen;j++)
@@ -76,12 +78,22 @@ int main()
 			
 			if(wasIntersection==true)
 			{
-				vector3d lightRay = intersectionPoint - lightPosition;
-				double cosAlpha = lightRay.findCos(intersectedTriangle.getNormal());
-				//cout << "alpha:" << cosAlpha;
-				plane.pixels[i][j].B = abs(cosAlpha)* 255;
-				plane.pixels[i][j].G= abs(cosAlpha) * 255;
-				plane.pixels[i][j].R= abs(cosAlpha) * 255;
+				bool wasIntersection2 = treeOfModel.intersectionOfRayAnd3Dmodel(lightPosition, intersectionPoint - lightPosition, intersectionPoint2, intersectedTriangle2);
+				if (intersectedTriangle == intersectedTriangle2)
+				{
+					vector3d lightRay = intersectionPoint - lightPosition;
+					double cosAlpha = lightRay.findCos(intersectedTriangle.getNormal());
+					//cout << "alpha:" << cosAlpha;
+					plane.pixels[i][j].B = abs(cosAlpha) * 255;
+					plane.pixels[i][j].G = abs(cosAlpha) * 255;
+					plane.pixels[i][j].R = abs(cosAlpha) * 255;
+				}
+				else
+				{
+					plane.pixels[i][j].B = 0;
+					plane.pixels[i][j].G = 0;
+					plane.pixels[i][j].R = 0;
+				}
 			}
 			else
 			{

@@ -136,3 +136,8 @@ double triangle::getZ_min()
 	}
 	return Min_z;
 }
+
+bool triangle::operator==(triangle second)
+{
+	return (this->getVertex1() == second.getVertex1() && this->getVertex2() == second.getVertex2() && this->getVertex3() == second.getVertex3());
+}
