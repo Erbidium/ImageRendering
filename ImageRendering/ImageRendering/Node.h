@@ -1,6 +1,5 @@
 #pragma once
 #include <iostream>
-
 #include "triangle.h"
 #include <vector>
 

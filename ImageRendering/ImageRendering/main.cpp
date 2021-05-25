@@ -1,4 +1,4 @@
-﻿#include "vector3d.h"
+#include "vector3d.h"
 #include "WorkWithBMP.h"
 #include "triangle.h"
 #include "projectionPlane.h"
@@ -8,17 +8,6 @@
 #include <iostream>
 #include <fstream>
 #include <ctime>
-/*
-bool operator==(triangle a, triangle b)
-{
-	if(((a.getVertex1().getX()==b.getVertex1().getX())&&(a.getVertex1().getY()==b.getVertex1().getY())&&(a.getVertex1().getZ()==b.getVertex1().getZ()))&&
-       ((a.getVertex2().getX()==b.getVertex2().getX())&&(a.getVertex2().getY()==b.getVertex2().getY())&&(a.getVertex2().getZ()==b.getVertex2().getZ()))&&
-	   ((a.getVertex3().getX()==b.getVertex3().getX())&&(a.getVertex3().getY()==b.getVertex3().getY())&&(a.getVertex3().getZ()==b.getVertex3().getZ()))
-		)
-		return true;
-	else
-		return false;
-}*/
 
 using namespace std;
 
@@ -32,16 +21,6 @@ int main()
 		treeOfModel.insert(triangles[i]);
 	}
 	cout<<"Tree build! Current time: "<< (double)(clock() - start_time) / CLOCKS_PER_SEC << " seconds." <<endl;
-	/*ofstream outFile("out.txt");
-	for(int i=0;i<gatheredTriangles.size();i++)
-	{
-		triangle trig=gatheredTriangles[i];
-		outFile<<trig.getVertex1().getX()<<" "<<trig.getVertex1().getY()<<" "<<trig.getVertex1().getZ()<<endl;
-		outFile<<trig.getVertex2().getX()<<" "<<trig.getVertex2().getY()<<" "<<trig.getVertex2().getZ()<<endl;
-		outFile<<trig.getVertex3().getX()<<" "<<trig.getVertex3().getY()<<" "<<trig.getVertex3().getZ()<<endl;
-		outFile<<endl;
-	}*/
-	//cout << triangles[triangles.size()-1].getVertex1().getX();
 
 	/*scene 1 settings
 	vector3d cameraPosition(2, -2, 2);
@@ -57,7 +36,6 @@ int main()
 	vector3d lightPosition(0.5, -1.5, 3);
 	int widthOfScreen=3840, heightOfScreen=2160;
 	
-	//int counter=0;
 	projectionPlane plane(widthOfScreen, heightOfScreen, cameraPosition+cameraDirection, cameraDirection, cameraPosition);
 	vector<vector<vector3d>> pixelsInWorld=plane.getPixelsCoordinatesInWorld();
 	vector3d intersectionPoint;
@@ -76,7 +54,6 @@ int main()
 				{
 					vector3d lightRay = intersectionPoint - lightPosition;
 					double cosAlpha = lightRay.findCos(intersectedTriangle.getNormal());
-					//cout << "alpha:" << cosAlpha;
 					plane.pixels[i][j].B = abs(cosAlpha) * 255;
 					plane.pixels[i][j].G = abs(cosAlpha) * 255;
 					plane.pixels[i][j].R = abs(cosAlpha) * 255;
