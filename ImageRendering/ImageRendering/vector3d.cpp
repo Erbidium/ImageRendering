@@ -90,3 +90,8 @@ bool vector3d::operator==(vector3d second)
 	return (this->getX() == second.getX() && this->getY() == second.getY() && this->getZ() == second.getZ());
 }
 
+vector3d vector3d::operator/(double num)
+{
+	return{x/num, y/num, z/num};
+}
+

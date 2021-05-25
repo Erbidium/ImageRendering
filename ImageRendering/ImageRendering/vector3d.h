@@ -24,4 +24,5 @@ public:
 	double getLength();
 	double findCos(vector3d b);
 	bool operator==(vector3d second);
+	vector3d operator /(double num);
 };

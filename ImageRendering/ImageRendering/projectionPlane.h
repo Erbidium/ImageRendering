@@ -12,20 +12,19 @@ class projectionPlane
 public:
 	std::vector<std::vector<PIXEL>> pixels;
 	std::vector<std::vector<vector3d>> getPixelsCoordinatesInWorld(){return pixelsCoordinatesInWorld;}
-	projectionPlane(int width, int height, vector3d centerOfPlane):
+	projectionPlane(int width, int height, vector3d centerOfPlane, vector3d cameraDirection, vector3d cameraPosition):
 	width(width), height(height), centerOfPlane(centerOfPlane),
 	pixels(height, std::vector<PIXEL>(width)), pixelsCoordinatesInWorld(height, std::vector<vector3d>(width))
 	{
+		vector3d cameraDirectionNormalized=cameraDirection/(cameraDirection.getLength());
+		vector3d rightVector=vector3d(0, 0, 1).crossProduct(cameraDirectionNormalized);
+		vector3d upVector=cameraDirectionNormalized.crossProduct(rightVector);
+		double imageAspectRatio=static_cast<double>(width)/height;
 		for(int pixelY=0;pixelY<height;pixelY++)
 		{
 			for(int pixelX=0;pixelX<width;pixelX++)
 			{
-				double pixelNDCX=(pixelX+0.5)/width;
-				double pixelNDCY=(pixelY+0.5)/height;
-				double pixelScreenX=2*pixelNDCX-1;
-				double pixelScreenY=1-2*pixelNDCY;
-				vector3d relativePointOfPixel(pixelScreenX, 0, pixelScreenY);
-				pixelsCoordinatesInWorld[pixelY][pixelX]=relativePointOfPixel+centerOfPlane;
+				pixelsCoordinatesInWorld[pixelY][pixelX]=cameraDirection+cameraPosition+rightVector*(static_cast<double>(2*pixelX)/width-1)*imageAspectRatio+upVector*(static_cast<double>(2*pixelY)/height-1);
 			}
 		}
 	}
