@@ -58,7 +58,7 @@ int main()
 	//cout << triangles[triangles.size()-1].getVertex1().getX();
 	vector3d cameraPosition(0, -1, 0);
 	vector3d cameraDirection(0, 1, 0);
-	vector3d lightPosition(0, -1, 0);
+	vector3d lightPosition(0.5, -1, 0.5);
 	//triangle triangleOnScene({10, 4, 0}, {10, -4, 0}, {10, 0, 4});
 	int widthOfScreen=720, heightOfScreen=720;
 	int counter=0;
@@ -97,9 +97,9 @@ int main()
 			}
 			else
 			{
-				plane.pixels[i][j].B=0;
-				plane.pixels[i][j].G=0;
-				plane.pixels[i][j].R=0;
+				plane.pixels[i][j].B=30;
+				plane.pixels[i][j].G=30;
+				plane.pixels[i][j].R=30;
 			}
 		}
 	}
