@@ -48,12 +48,12 @@ void Rtree::insert(triangle trig)
 
 bool Rtree::intersectionOfRayAnd3Dmodel(vector3d rayOrigin, vector3d rayVector, vector3d& outIntersectionPoint, triangle& intersectedTriangle)
 {
-	bool finished=false;
+	bool wasInetersection=false;
 	//return intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, root);
 	if(!intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, root))
 		return false;
 	else
-		return findIntersectionInTree(rayOrigin, rayVector, outIntersectionPoint, root, finished, intersectedTriangle);
+		return findIntersectionInTree(rayOrigin, rayVector, outIntersectionPoint, root, wasInetersection, intersectedTriangle);
 }
 
 vector<Node*> Rtree::ChooseLeaf(Node* current, triangle trig)
@@ -294,31 +294,45 @@ vector<Node*> Rtree::LinearSplit(vector<triangle> trigs)
 	return SplitNodes;
 }
 
-bool Rtree::findIntersectionInTree(vector3d rayOrigin, vector3d rayVector, vector3d& outIntersectionPoint, Node * current, bool&finished, triangle& intersectedTriangle)
+bool Rtree::findIntersectionInTree(vector3d rayOrigin, vector3d rayVector, vector3d& outIntersectionPoint, Node * current, bool&wasIntersection, triangle& intersectedTriangle)
 {
 	if(current->childs.empty())
 	{
-		for(int i=0;(i<current->triangles.size())&&(!finished);i++)
+		for(int i=0;i<current->triangles.size();i++)
 		{
-			if(intersectionChecker::rayIntersectsTriangle(rayOrigin, rayVector, &(current->triangles[i]), outIntersectionPoint))
+			vector3d tempIntersectionPoint;
+			if(intersectionChecker::rayIntersectsTriangle(rayOrigin, rayVector, &(current->triangles[i]), tempIntersectionPoint))
 			{
-				intersectedTriangle=current->triangles[i];
-				finished=true;
-				break;
+				if (wasIntersection)
+				{
+					double distanceOld = (rayOrigin - outIntersectionPoint).getLength();
+					double distanceNew = (rayOrigin - tempIntersectionPoint).getLength();
+					if (distanceNew < distanceOld)
+					{
+						intersectedTriangle = current->triangles[i];
+						outIntersectionPoint = tempIntersectionPoint;
+					}
+				}
+				else
+				{
+					intersectedTriangle = current->triangles[i];
+					outIntersectionPoint = tempIntersectionPoint;
+					wasIntersection = true;
+				}
 			}
 		}
-		return finished;
+		return wasIntersection;
 	}
 	else
 	{
-		for(int i=0;(i<current->childs.size())&&(!finished);i++)
+		for(int i=0;i<current->childs.size();i++)
 		{
 			bool wasIntersectionWithRect=intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, current->childs[i]);
 			if(wasIntersectionWithRect)
-				findIntersectionInTree(rayOrigin, rayVector, outIntersectionPoint, current->childs[i], finished, intersectedTriangle);
+				findIntersectionInTree(rayOrigin, rayVector, outIntersectionPoint, current->childs[i], wasIntersection, intersectedTriangle);
 		}
 		
-		return finished;
+		return wasIntersection;
 	}
 }
 

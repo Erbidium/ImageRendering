@@ -7,6 +7,7 @@
 #include "Rtree.h"
 #include <iostream>
 #include <fstream>
+#include <ctime>
 /*
 bool operator==(triangle a, triangle b)
 {
@@ -23,6 +24,7 @@ using namespace std;
 
 int main()
 {
+	clock_t start_time = clock();
 	vector<triangle> triangles =  fileReader::readObj("cow.obj");
 	Rtree treeOfModel;
 	for(int i=0;i<triangles.size();i++)
@@ -90,4 +92,6 @@ int main()
 		}
 	}
 	WorkWithBMP::createBMPImage(heightOfScreen, widthOfScreen, plane.pixels);
+	clock_t end_time = clock();
+	cout << "\nTime: " << (double)(end_time - start_time) / CLOCKS_PER_SEC << endl;
 }
