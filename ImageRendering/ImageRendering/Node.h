@@ -16,7 +16,6 @@ struct Node
 	}
 	Node* operator=(Node* current)
 	{
-		//std::cout<<"operator called\n";
 		childs=current->childs;
 		triangles=current->triangles;
 		x_max=current->x_max;
@@ -44,8 +43,6 @@ struct Node
 	{
 		return { (x_max + x_min) / 2, (y_max + y_min) / 2, (z_max + z_min) / 2 };
 	}
-	///replace INT_MAX with bool statements for initialized or not 3d rectangles!!!!
-	///INT_MIN for x_max and others!!!
 	std::vector<Node*> childs;
 	std::vector<triangle> triangles;
 	double x_max, x_min, y_max, y_min, z_max, z_min;

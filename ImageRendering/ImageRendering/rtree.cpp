@@ -1,34 +1,7 @@
 #include "Rtree.h"
-
 #include <iostream>
-
 #include "intersectionChecker.h"
 using namespace std;
-
-int globalCounter=0;
-
-void Rtree::countTrigs(int &number, Node*current, std::vector<triangle>&trigs)
-{
-	if(current!=nullptr)
-	{
-		if(current->childs.empty())
-		{
-			number+=current->triangles.size();
-			for(int i=0;i<current->triangles.size();i++)
-			{
-				trigs.push_back(current->triangles[i]);
-			}
-			//cout<<"Did sum "<<number<<endl;
-		}
-		else
-		{
-			for(int i=0;i<current->childs.size();i++)
-			{
-				countTrigs(number, current->childs[i], trigs);
-			}
-		}
-	}
-}
 
 void Rtree::insert(triangle trig)
 {
@@ -41,24 +14,8 @@ void Rtree::insert(triangle trig)
 		for (int i = 0; i < splitNodes.size(); i++)
 		{
 			root->childs.push_back(splitNodes[i]);
-			AdjustBoundsRect(root, root->childs[i]->x_max, root->childs[i]->x_min, root->childs[i]->y_max, root->childs[i]->y_min, root->childs[i]->z_max, root->childs[i]->z_min);
 		}
 	}
-}
-
-bool Rtree::intersectionOfRayAnd3Dmodel(vector3d rayOrigin, vector3d rayVector, vector3d& outIntersectionPoint, triangle& intersectedTriangle)
-{
-	bool wasInetersection=false;
-	//return intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, root);
-	if(!intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, root))
-		return false;
-	else
-		return findIntersectionInTree(rayOrigin, rayVector, outIntersectionPoint, root, wasInetersection, intersectedTriangle);
-}
-
-bool Rtree::intersectionOfLightRay(vector3d rayOrigin, vector3d rayVector, vector3d& intersectionPoint, triangle& intersectedTriangle)
-{
-		return findIntersectionLigthInTree(rayOrigin, rayVector, root, intersectionPoint, intersectedTriangle);
 }
 
 vector<Node*> Rtree::ChooseLeaf(Node* current, triangle trig)
@@ -70,11 +27,6 @@ vector<Node*> Rtree::ChooseLeaf(Node* current, triangle trig)
 		if (SplitNodes.empty())
 		{
 			AdjustBounds(current, trig);
-		}
-		else
-		{
-			//current->triangles.clear();
-			//current->setDefaultRect();
 		}
 		return SplitNodes;
 	}
@@ -94,9 +46,7 @@ vector<Node*> Rtree::ChooseLeaf(Node* current, triangle trig)
 					break;
 				}
 			}
-			//delete current->childs[indexOfOptimal];
-			//current->childs[indexOfOptimal]=nullptr;
-			current->childs.erase(current->childs.begin()+indexOfOptimal);////
+			current->childs.erase(current->childs.begin()+indexOfOptimal);
 			if (current->childs.size() < maxEntries)
 			{
 				for(int i=0;i<SplitNodes.size();i++)
@@ -121,7 +71,6 @@ vector<Node*> Rtree::DoInsert(Node* current, triangle trig)
 	if (current->triangles.size() < maxNumberOfLeafs)
 	{
 		current->triangles.push_back(trig);
-		//AdjustBounds(current, trig);
 	}
 	else
 	{
@@ -210,31 +159,6 @@ Node* Rtree::MinimalResize(Node* current, triangle trig)
 	return current->childs[indexOfChild];
 }
 
-Node* Rtree::MinimalResizeRect(Node* current, double x_max, double y_max, double z_max, double x_min, double y_min, double z_min)
-{
-	double MinimalDeltaVolume = INT_MAX;
-	int indexofChild;
-	for (int i = 0; i < current->childs.size(); i++)
-	{
-		Node *temp=new Node;
-		*temp=current->childs[i];
-		double PreviousVolume = getVolume(temp);
-		AdjustBoundsRect(temp, x_max, x_min, y_max, y_min, z_max, z_min);
-		double NewVolume = getVolume(temp);
-		if (MinimalDeltaVolume > NewVolume - PreviousVolume)
-		{
-			MinimalDeltaVolume = NewVolume - PreviousVolume;
-			indexofChild = i;
-		}
-	}
-	return current->childs[indexofChild];
-}
-
-double Rtree::getVolume(Node* current)
-{
-	return ((current->x_max - current->x_min)*(current->y_max - current->y_min)*(current->z_max - current->z_min));
-}
-
 vector<Node*> Rtree::LinearSplit(vector<triangle> trigs)
 {
 	int indexOfLeaf1 = 0, indexOfLeaf2 = 1;
@@ -269,14 +193,17 @@ vector<Node*> Rtree::LinearSplit(vector<triangle> trigs)
 	{
 		trigs.erase(trigs.begin() + indexOfLeaf2 - 1);
 	}
+	double oldVolume1;
+	double oldVolume2;
+	triangle currentTriangle;
+	Node* tempLeaf1 = new Node;
+	Node* tempLeaf2 = new Node;
 	for (int i = 0; i < trigs.size(); i++)
 	{
-		double oldVolume1 = getVolume(leaf1);
-		double oldVolume2 = getVolume(leaf2);
-		triangle currentTriangle = trigs[i];
-		Node *tempLeaf1 = new Node;
+		oldVolume1 = getVolume(leaf1);
+		oldVolume2 = getVolume(leaf2);
+		currentTriangle = trigs[i];
 		*tempLeaf1=leaf1;
-		Node *tempLeaf2 = new Node;
 		*tempLeaf2=leaf2;
 		AdjustBounds(tempLeaf1, trigs[i]);
 		double VoulumeOfFirst = getVolume(tempLeaf1);
@@ -298,118 +225,6 @@ vector<Node*> Rtree::LinearSplit(vector<triangle> trigs)
 	SplitNodes.push_back(leaf2);
 	return SplitNodes;
 }
-
-bool Rtree::findIntersectionInTree(vector3d rayOrigin, vector3d rayVector, vector3d& outIntersectionPoint, Node * current, bool&wasIntersection, triangle& intersectedTriangle)
-{
-	if(current->childs.empty())
-	{
-		for(int i=0;i<current->triangles.size();i++)
-		{
-			vector3d tempIntersectionPoint;
-			if(intersectionChecker::rayIntersectsTriangle(rayOrigin, rayVector, &(current->triangles[i]), tempIntersectionPoint))
-			{
-				if (wasIntersection)
-				{
-					double distanceOld = (rayOrigin - outIntersectionPoint).getLength();
-					double distanceNew = (rayOrigin - tempIntersectionPoint).getLength();
-					if (distanceNew < distanceOld)
-					{
-						intersectedTriangle = current->triangles[i];
-						outIntersectionPoint = tempIntersectionPoint;
-					}
-				}
-				else
-				{
-					intersectedTriangle = current->triangles[i];
-					outIntersectionPoint = tempIntersectionPoint;
-					wasIntersection = true;
-				}
-			}
-		}
-		return wasIntersection;
-	}
-	else
-	{
-		for(int i=0;i<current->childs.size();i++)
-		{
-			bool wasIntersectionWithRect=intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, current->childs[i]);
-			if(wasIntersectionWithRect)
-				findIntersectionInTree(rayOrigin, rayVector, outIntersectionPoint, current->childs[i], wasIntersection, intersectedTriangle);
-		}
-		
-		return wasIntersection;
-	}
-}
-
-bool Rtree::findIntersectionLigthInTree(vector3d rayOrigin, vector3d rayVector, Node* current, vector3d& intersectionPoint, triangle &intersectedTriangle)
-{
-	bool triangleBefore = false;
-	if (current->childs.empty())
-	{
-		for (int i = 0; i < current->triangles.size() && !triangleBefore; i++)
-		{
-			vector3d tempIntersectionPoint;
-			if (intersectionChecker::rayIntersectsTriangle(rayOrigin, rayVector, &(current->triangles[i]), tempIntersectionPoint))
-			{
-				if (!(current->triangles[i] == intersectedTriangle))
-				{
-					double distanceOld = (rayOrigin - intersectionPoint).getLength();
-					double distanceNew = (rayOrigin - tempIntersectionPoint).getLength();
-					if (distanceNew < distanceOld)
-					{
-						triangleBefore = true;
-					}
-				}
-			}
-		}
-		return triangleBefore;
-	}
-	else
-	{
-		for (int i = 0; i < current->childs.size() && !triangleBefore; i++)
-		{
-			if (intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, current->childs[i]))
-				triangleBefore = findIntersectionLigthInTree(rayOrigin, rayVector, current->childs[i], intersectionPoint, intersectedTriangle);
-		}
-		return triangleBefore;
-	}
-}
-
-int Rtree::count(vector<triangle>&trigs)
-{
-	int number=0;
-	countTrigs(number, root, trigs);
-	return number;
-}
-
-/*
-vector<Node*> Rtree::LinearSplitNodes(vector<Node*> Spleet, Node* current)
-{
-	vector<Node*> SplitNodes(2);
-	SplitNodes[0]=new Node;
-	SplitNodes[1]=new Node;
-	for (int i = 0; i < Spleet.size(); i++)
-	{
-		SplitNodes[0]->childs.push_back(Spleet[i]);
-		AdjustBoundsRect(SplitNodes[0], SplitNodes[0]->childs[i]->x_max, SplitNodes[0]->childs[i]->x_min, SplitNodes[0]->childs[i]->y_max, SplitNodes[0]->childs[i]->y_min, SplitNodes[0]->childs[i]->z_max, SplitNodes[0]->childs[i]->z_min);
-	}
-	int i=current->childs.size()-2;
-	SplitNodes[0]->childs.push_back(current->childs[i]);
-		AdjustBoundsRect(SplitNodes[0], SplitNodes[0]->childs[i]->x_max, SplitNodes[0]->childs[i]->x_min, SplitNodes[0]->childs[i]->y_max, SplitNodes[0]->childs[i]->y_min, SplitNodes[0]->childs[i]->z_max, SplitNodes[0]->childs[i]->z_min);
-	i++;
-	SplitNodes[0]->childs.push_back(current->childs[i]);
-		AdjustBoundsRect(SplitNodes[0], SplitNodes[0]->childs[i]->x_max, SplitNodes[0]->childs[i]->x_min, SplitNodes[0]->childs[i]->y_max, SplitNodes[0]->childs[i]->y_min, SplitNodes[0]->childs[i]->z_max, SplitNodes[0]->childs[i]->z_min);
-	for (int i = 0; i < current->childs.size()-2; i++)
-	{
-		SplitNodes[1]->childs.push_back(current->childs[i]);
-		AdjustBoundsRect(SplitNodes[1], current->childs[i]->x_max, current->childs[i]->x_min, current->childs[i]->y_max, current->childs[i]->y_min, current->childs[i]->z_max, current->childs[i]->z_min);
-	}
-	current->childs.clear();//
-	current->triangles.clear();
-	return SplitNodes;
-	////Rework LinearSplitNodes and optimally divide Nodes of rtree
-}
-*/
 
 vector<Node*> Rtree::LinearSplitNodes(vector<Node*> Spleet, Node* current)
 {
@@ -448,18 +263,22 @@ vector<Node*> Rtree::LinearSplitNodes(vector<Node*> Spleet, Node* current)
 	{
 		nodesToSplit.erase(nodesToSplit.begin() + indexOfChild2 - 1);
 	}
+	Node* tempChild1 = new Node;
+	Node* tempChild2 = new Node;
+	double OldVolume1;
+	double OldVolume2;
+	double VoulumeOfFirst;
+	double VolumeOfSecondChild;
 	for (int i = 0; i < nodesToSplit.size(); i++)
 	{
-		Node *tempChild1 = new Node;
 		*tempChild1=Child1;
-		Node *tempChild2 = new Node;
 		*tempChild2=Child2;
-		double OldVolume1 = getVolume(Child1);
-		double OldVolume2 = getVolume(Child2);
+		OldVolume1 = getVolume(Child1);
+		OldVolume2 = getVolume(Child2);
 		AdjustBoundsRect(tempChild1, nodesToSplit[i]->x_max, nodesToSplit[i]->x_min, nodesToSplit[i]->y_max, nodesToSplit[i]->y_min, nodesToSplit[i]->z_max, nodesToSplit[i]->z_min);
-		double VoulumeOfFirst = getVolume(tempChild1);
+		VoulumeOfFirst = getVolume(tempChild1);
 		AdjustBoundsRect(tempChild2, nodesToSplit[i]->x_max, nodesToSplit[i]->x_min, nodesToSplit[i]->y_max, nodesToSplit[i]->y_min, nodesToSplit[i]->z_max, nodesToSplit[i]->z_min);
-		double VolumeOfSecondChild = getVolume(tempChild2);
+		VolumeOfSecondChild = getVolume(tempChild2);
 		if (VoulumeOfFirst - OldVolume1 > VolumeOfSecondChild - OldVolume2)
 		{
 			Child2->childs.push_back(nodesToSplit[i]);
@@ -474,4 +293,112 @@ vector<Node*> Rtree::LinearSplitNodes(vector<Node*> Spleet, Node* current)
 	SplitNodes[0] = Child1;
 	SplitNodes[1] = Child2;
 	return SplitNodes;
+}
+
+bool Rtree::intersectionOfRayAnd3Dmodel(vector3d rayOrigin, vector3d rayVector, vector3d& outIntersectionPoint, triangle& intersectedTriangle)
+{
+	if (!intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, root))
+	{
+		return false;
+	}
+	else
+	{
+		bool wasInetersection = false;
+		return findIntersectionInTree(rayOrigin, rayVector, outIntersectionPoint, root, wasInetersection, intersectedTriangle);
+	}
+}
+
+bool Rtree::findIntersectionInTree(vector3d rayOrigin, vector3d rayVector, vector3d &outIntersectionPoint, Node *current, bool &wasIntersection, triangle &intersectedTriangle)
+{
+	if (current->childs.empty())
+	{
+		vector3d tempIntersectionPoint;
+		double distanceOld;
+		double distanceNew;
+		for (int i = 0; i < current->triangles.size(); i++)
+		{
+			if (intersectionChecker::rayIntersectsTriangle(rayOrigin, rayVector, &(current->triangles[i]), tempIntersectionPoint))
+			{
+				if (wasIntersection)
+				{
+					distanceOld = (rayOrigin - outIntersectionPoint).getLength();
+					distanceNew = (rayOrigin - tempIntersectionPoint).getLength();
+					if (distanceNew < distanceOld)
+					{
+						intersectedTriangle = current->triangles[i];
+						outIntersectionPoint = tempIntersectionPoint;
+					}
+				}
+				else
+				{
+					intersectedTriangle = current->triangles[i];
+					outIntersectionPoint = tempIntersectionPoint;
+					wasIntersection = true;
+				}
+			}
+		}
+		return wasIntersection;
+	}
+	else
+	{
+		bool wasIntersectionWithRect;
+		for (int i = 0; i < current->childs.size(); i++)
+		{
+			wasIntersectionWithRect = intersectionChecker::intersectionRayAndBox(rayVector, rayOrigin, current->childs[i]);
+			if (wasIntersectionWithRect)
+			{
+				findIntersectionInTree(rayOrigin, rayVector, outIntersectionPoint, current->childs[i], wasIntersection, intersectedTriangle);
+			}
+		}
+
+		return wasIntersection;
+	}
+}
+
+bool Rtree::findIntersectionLigthInTree(vector3d lightPoint, vector3d lightVector, Node *current, vector3d &intersectionPoint, triangle &intersectedTriangle)
+{
+	bool triangleBefore = false;
+	if (current->childs.empty())
+	{
+		double distanceOld;
+		double distanceNew;
+		vector3d tempIntersectionPoint;
+		for (int i = 0; i < current->triangles.size() && !triangleBefore; i++)
+		{
+			if (intersectionChecker::rayIntersectsTriangle(lightPoint, lightVector, &(current->triangles[i]), tempIntersectionPoint))
+			{
+				if (!(current->triangles[i] == intersectedTriangle))
+				{
+					distanceOld = (lightPoint - intersectionPoint).getLength();
+					distanceNew = (lightPoint - tempIntersectionPoint).getLength();
+					if (distanceNew < distanceOld)
+					{
+						triangleBefore = true;
+					}
+				}
+			}
+		}
+		return triangleBefore;
+	}
+	else
+	{
+		for (int i = 0; i < current->childs.size() && !triangleBefore; i++)
+		{
+			if (intersectionChecker::intersectionRayAndBox(lightVector, lightPoint, current->childs[i]))
+			{
+				triangleBefore = findIntersectionLigthInTree(lightPoint, lightVector, current->childs[i], intersectionPoint, intersectedTriangle);
+			}
+		}
+		return triangleBefore;
+	}
+}
+
+double Rtree::getVolume(Node* current)
+{
+	return ((current->x_max - current->x_min) * (current->y_max - current->y_min) * (current->z_max - current->z_min));
+}
+
+Node* Rtree::getRoot()
+{
+	return root;
 }

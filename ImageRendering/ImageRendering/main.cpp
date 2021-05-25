@@ -31,21 +31,7 @@ int main()
 	{
 		treeOfModel.insert(triangles[i]);
 	}
-	cout<<"build!"<<endl;
-	vector<triangle> gatheredTriangles;
-	cout<<"number of Triangles: "<<treeOfModel.count(gatheredTriangles)<<endl;
-	cout<<"trigs size: "<<gatheredTriangles.size()<<endl;/*
-	for(int i=0;i<gatheredTriangles.size()*1;i++)
-	{
-		for(int j=i+1;j<gatheredTriangles.size();j++)
-		{
-			if(gatheredTriangles[i]==gatheredTriangles[j])
-			{
-				cout<<"Yes1"<<endl;
-				break;
-			}
-		}
-	}*/
+	cout<<"Tree build! Current time: "<< (double)(clock() - start_time) / CLOCKS_PER_SEC << " seconds." <<endl;
 	/*ofstream outFile("out.txt");
 	for(int i=0;i<gatheredTriangles.size();i++)
 	{
@@ -76,7 +62,7 @@ int main()
 			
 			if(wasIntersection==true)
 			{
-				if (!treeOfModel.intersectionOfLightRay(lightPosition, intersectionPoint - lightPosition, intersectionPoint, intersectedTriangle))
+				if (!treeOfModel.findIntersectionLigthInTree(lightPosition, lightPosition - intersectionPoint, treeOfModel.getRoot(), intersectionPoint, intersectedTriangle))
 				{
 					vector3d lightRay = intersectionPoint - lightPosition;
 					double cosAlpha = lightRay.findCos(intersectedTriangle.getNormal());
@@ -102,5 +88,5 @@ int main()
 	}
 	WorkWithBMP::createBMPImage(heightOfScreen, widthOfScreen, plane.pixels);
 	clock_t end_time = clock();
-	cout << "\nTime: " << (double)(end_time - start_time) / CLOCKS_PER_SEC << endl;
+	cout << "\nImage rendered! Current time: " << (double)(end_time - start_time) / CLOCKS_PER_SEC << " seconds." << endl;
 }
