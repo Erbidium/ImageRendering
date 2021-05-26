@@ -1,5 +1,6 @@
 ﻿#pragma once
-
+#include <iostream>
+using namespace std;
 class vector3d
 {
 	double x;
@@ -24,4 +25,7 @@ public:
 	double getLength();
 	double findCos(vector3d b);
 	bool operator==(vector3d second);
+	void print() {
+		cout << "X: " << x << "Y: " << y << "Z: " << z << endl;
+	}
 };

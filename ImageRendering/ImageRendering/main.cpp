@@ -25,7 +25,7 @@ using namespace std;
 int main()
 {
 	clock_t start_time = clock();
-	vector<triangle> triangles =  fileReader::readObj("cow.obj");
+	vector<triangle> triangles =  fileReader::readObj("car.obj");
 	Rtree treeOfModel;
 	for(int i=0;i<triangles.size();i++)
 	{
@@ -60,7 +60,7 @@ int main()
 	vector3d cameraDirection(0, 1, 0);
 	vector3d lightPosition(0.5, -1, 0.5);
 	//triangle triangleOnScene({10, 4, 0}, {10, -4, 0}, {10, 0, 4});
-	int widthOfScreen=720, heightOfScreen=720;
+	int widthOfScreen=100, heightOfScreen=100;
 	int counter=0;
 	projectionPlane plane(widthOfScreen, heightOfScreen, cameraPosition+cameraDirection);
 	vector<vector<vector3d>> pixelsInWorld=plane.getPixelsCoordinatesInWorld();

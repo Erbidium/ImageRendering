@@ -1,5 +1,6 @@
 #include "fileReader.h"
 #include <fstream>
+#include <algorithm>
 
 using namespace std;
 
@@ -31,27 +32,89 @@ vector<triangle> fileReader::readObj(string nameOfFile)
 			tops.push_back(tempTop);
 		}
 		else if (s[0] == 'f') {
-			triangle tempTriangle;
-			int k = s.find(' ');
-			s.erase(0, k + 1);
-			k = s.find("//");
-			int firstTop = stoi(s.substr(0, k));
-			s.erase(0, k + 2);
-			k = s.find(' ');
-			s.erase(0, k + 1);
-			k = s.find("//");
-			int secondTop = stoi(s.substr(0, k));
-			s.erase(0, k + 2);
-			k = s.find(' ');
-			s.erase(0, k + 1);
-			k = s.find("//");
-			int thirdTop = stoi(s.substr(0, k));
-			s.erase(0, k + 2);
-			tempTriangle.setVertex1(tops[firstTop-1]);
-			tempTriangle.setVertex2(tops[secondTop-1]);
-			tempTriangle.setVertex3(tops[thirdTop-1]);
-			//cout<<firstTop<<" "<<secondTop<<" "<<thirdTop<<endl;
-			triangles.push_back(tempTriangle);
+			int countSlash = count(s.begin(), s.end(), '/');
+			if (countSlash == 6 && s.find('//')) {
+				triangle tempTriangle;
+				int k = s.find(' ');
+				s.erase(0, k + 1);
+				k = s.find("//");
+				int firstTop = stoi(s.substr(0, k));
+				s.erase(0, k + 2);
+				k = s.find(' ');
+				s.erase(0, k + 1);
+				k = s.find("//");
+				int secondTop = stoi(s.substr(0, k));
+				s.erase(0, k + 2);
+				k = s.find(' ');
+				s.erase(0, k + 1);
+				k = s.find("//");
+				int thirdTop = stoi(s.substr(0, k));
+				s.erase(0, k + 2);
+				tempTriangle.setVertex1(tops[firstTop - 1]);
+				tempTriangle.setVertex2(tops[secondTop - 1]);
+				tempTriangle.setVertex3(tops[thirdTop - 1]);
+				triangles.push_back(tempTriangle);
+			}
+			else if (countSlash == 6 && !s.find('//')) {
+				triangle tempTriangle;
+				int k = s.find(' ');
+				s.erase(0, k + 1);
+				k = s.find('/');
+				int firstTop = stoi(s.substr(0, k));
+				s.erase(0, k + 1);
+				k = s.find(' ');
+				s.erase(0, k + 1);
+				k = s.find("/");
+				int secondTop = stoi(s.substr(0, k));
+				s.erase(0, k + 1);
+				k = s.find(' ');
+				s.erase(0, k + 1);
+				k = s.find("/");
+				int thirdTop = stoi(s.substr(0, k));
+				s.erase(0, k + 1);				
+				tempTriangle.setVertex1(tops[firstTop - 1]);
+				tempTriangle.setVertex2(tops[secondTop - 1]);
+				tempTriangle.setVertex3(tops[thirdTop - 1]);
+				triangles.push_back(tempTriangle);
+			}
+			else if (countSlash == 8) {
+				triangle tempTriangle1;
+				triangle tempTriangle2;
+				int k = s.find(' ');
+				s.erase(0, k + 1);
+				k = s.find('/');
+				int firstTop = stoi(s.substr(0, k));
+				s.erase(0, k + 1);
+				k = s.find(' ');
+				s.erase(0, k + 1);
+				k = s.find("/");
+				int secondTop = stoi(s.substr(0, k));
+				s.erase(0, k + 1);
+				k = s.find(' ');
+				s.erase(0, k + 1);
+				k = s.find("/");
+				int thirdTop = stoi(s.substr(0, k));
+				s.erase(0, k + 1);
+				k = s.find(' ');
+				s.erase(0, k + 1);
+				k = s.find("/");
+				int fourthTop = stoi(s.substr(0, k));
+				s.erase(0, k + 1);
+				/*cout << "firstTop " << firstTop << endl;
+				cout << "secondTop " << secondTop << endl;
+				cout << "thirdTop " << thirdTop << endl;
+				cout << "fourthTop " << fourthTop << endl;
+				cout << " Check " << endl;
+				tops[firstTop - 1].print();*/
+				tempTriangle1.setVertex1(tops[firstTop - 1]);
+				tempTriangle1.setVertex2(tops[secondTop - 1]);
+				tempTriangle1.setVertex3(tops[thirdTop - 1]);
+				tempTriangle2.setVertex1(tops[firstTop - 1]);
+				tempTriangle2.setVertex2(tops[thirdTop - 1]);
+				tempTriangle2.setVertex3(tops[fourthTop- 1]);
+				triangles.push_back(tempTriangle1);
+				triangles.push_back(tempTriangle2);
+			}
 		}
 	}
 	return triangles;
