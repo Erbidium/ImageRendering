@@ -14,7 +14,7 @@ using namespace std;
 int main()
 {
 	clock_t start_time = clock();
-	vector<triangle> triangles =  fileReader::readObj("cow.obj");
+	vector<triangle> triangles =  fileReader::readObj("car.obj");
 	Rtree treeOfModel;
 	for(int i=0;i<triangles.size();i++)
 	{
