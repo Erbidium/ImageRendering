@@ -13,7 +13,7 @@ vector<triangle> fileReader::readObj(string nameOfFile)
 	triangle tempTriangle;
 	while (getline(inFile,s)) {
 		vector3d tempTop;
-		if (s[0] == 'v') {
+		if ((s.size()>=2)&&(s[0] == 'v')&&(s[1]!='t')&&(s[1]!='n')) {
 			int k = 0;
 			k = s.find(' ');
 			s.erase(0, k + 1);
