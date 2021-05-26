@@ -30,11 +30,11 @@ int main()
 	int widthOfScreen=720, heightOfScreen=480;
 	*/
 
-	vector3d cameraPosition(2, -2, 2);
+	vector3d cameraPosition(0, -30, 0);
 	vector3d lookAtPoint(0, 0, 0);
 	vector3d cameraDirection=lookAtPoint-cameraPosition;
 	vector3d lightPosition(0.5, -1.5, 3);
-	int widthOfScreen=3840, heightOfScreen=2160;
+	int widthOfScreen=720, heightOfScreen=480;
 	
 	projectionPlane plane(widthOfScreen, heightOfScreen, cameraPosition+cameraDirection, cameraDirection, cameraPosition);
 	vector<vector<vector3d>> pixelsInWorld=plane.getPixelsCoordinatesInWorld();
@@ -50,7 +50,7 @@ int main()
 			
 			if(wasIntersection==true)
 			{
-				if (!treeOfModel.findIntersectionLigthInTree(lightPosition, lightPosition - intersectionPoint, treeOfModel.getRoot(), intersectionPoint, intersectedTriangle))
+				if (!treeOfModel.findIntersectionLigthInTree(lightPosition,intersectionPoint - lightPosition, treeOfModel.getRoot(), intersectionPoint, intersectedTriangle))
 				{
 					vector3d lightRay = intersectionPoint - lightPosition;
 					double cosAlpha = lightRay.findCos(intersectedTriangle.getNormal());
