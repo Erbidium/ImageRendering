@@ -12,12 +12,14 @@
 
 using namespace std;
 
-void takeParameters(vector3d& camaraPosition, vector3d& lookAtPoint, vector3d& lightPosition, int& widthOfScreen,int& heightOfScreen, int& intens, vector3d& lightColour, vector3d& lightModel);
+void takeParameters(vector3d& camaraPosition, vector3d& lookAtPoint, vector<vector3d>& lightPosition, int& widthOfScreen,int& heightOfScreen, vector<int>& intens, vector<vector3d>& lightColour, vector3d& lightModel);
 
 int main()
 {
-	vector3d cameraPosition, lookAtPoint, lightPosition, lightColour, lightModel;
-	int widthOfScreen, heightOfScreen, intens;
+	vector3d cameraPosition, lookAtPoint, lightModel;
+	vector<vector3d>  lightPosition, lightColour;
+	int widthOfScreen, heightOfScreen;
+	vector<int> intens;
 	takeParameters(cameraPosition, lookAtPoint, lightPosition, widthOfScreen, heightOfScreen, intens, lightColour, lightModel);
 	clock_t start_time = clock();
 	vector<triangle> triangles =  fileReader::readObj("car.obj");
@@ -84,10 +86,10 @@ int main()
 	}
 	WorkWithBMP::createBMPImage(heightOfScreen, widthOfScreen, plane.pixels);
 	clock_t end_time = clock();
-	cout << "\nImage rendered! Render time: " <<(end_time - start_time2)<< "seconds\nTotal time: "<< (double)(end_time - start_time) / CLOCKS_PER_SEC << " seconds." << endl;
+	cout << "\nImage rendered! Render time: " <<(end_time - start_time2) / CLOCKS_PER_SEC << "seconds\nTotal time: "<< (double)(end_time - start_time) / CLOCKS_PER_SEC << " seconds." << endl;
 }
 
-void takeParameters(vector3d& camaraPosition, vector3d& lookAtPoint, vector3d& lightPosition, int& widthOfScreen, int& heightOfScreen, int& intens, vector3d& lightColour, vector3d& lightModel)
+void takeParameters(vector3d& camaraPosition, vector3d& lookAtPoint, vector<vector3d>& lightPosition, int& widthOfScreen, int& heightOfScreen, vector<int>& intens, vector<vector3d>& lightColour, vector3d& lightModel)
 {
 	double temp;
 	cout << "\nEnter camera position:\nx: ";
@@ -108,26 +110,35 @@ void takeParameters(vector3d& camaraPosition, vector3d& lookAtPoint, vector3d& l
 	cout << "\nz: ";
 	cin >> temp;
 	lookAtPoint.setZ(temp);
-	cout << "\nEnter the light source position:\nx: ";
-	cin >> temp;
-	lightPosition.setX(temp);
-	cout << "\ny: ";
-	cin >> temp;
-	lightPosition.setY(temp);
-	cout << "\nz: ";
-	cin >> temp;
-	lightPosition.setZ(temp);
-	cout << "\nEnter light intense:\n";
-	cin >> intens;
-	cout << "\nEnter the colour of the light:\nR: ";
-	cin >> temp;
-	lightColour.setX(temp/255);
-	cout << "\nG: ";
-	cin >> temp;
-	lightColour.setY(temp/255);
-	cout << "\nB: ";
-	cin >> temp;
-	lightColour.setZ(temp/255);
+	int size;
+	cout << "\nEnter Amount of the light sources:\n ";
+	cin >> size;
+	lightPosition.resize(size);
+	lightColour.resize(size);
+	intens.resize(size);
+	for (int i = 0; i < size; i++)
+	{
+		cout << "\nEnter the "<< i <<" light source position:\nx: ";
+		cin >> temp;
+		lightPosition[i].setX(temp);
+		cout << "\ny: ";
+		cin >> temp;
+		lightPosition[i].setY(temp);
+		cout << "\nz: ";
+		cin >> temp;
+		lightPosition[i].setZ(temp);
+		cout << "\nEnter "<< i <<" light intense:\n";
+		cin >> intens[i];
+		cout << "\nEnter the colour of the "<< i <<" light:\nR: ";
+		cin >> temp;
+		lightColour[i].setX(temp / 255);
+		cout << "\nG: ";
+		cin >> temp;
+		lightColour[i].setY(temp / 255);
+		cout << "\nB: ";
+		cin >> temp;
+		lightColour[i].setZ(temp / 255);
+	}
 	cout << "\nEnter the colour of the model:\nR: ";
 	cin >> temp;
 	lightModel.setX(temp/255);
