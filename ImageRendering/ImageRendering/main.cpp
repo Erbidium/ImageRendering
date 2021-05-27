@@ -30,11 +30,12 @@ int main()
 	int widthOfScreen=720, heightOfScreen=480;
 	*/
 
-	vector3d cameraPosition(0, -30, 0);
+	vector3d cameraPosition(-20, 15, 20);
 	vector3d lookAtPoint(0, 0, 0);
 	vector3d cameraDirection=lookAtPoint-cameraPosition;
-	vector3d lightPosition(0.5, -1.5, 3);
-	int widthOfScreen=720, heightOfScreen=480;
+	cameraDirection=cameraDirection/(cameraDirection.getLength());
+	vector3d lightPosition(-30, 20, 25);
+	int widthOfScreen=1000, heightOfScreen=1000;
 	
 	projectionPlane plane(widthOfScreen, heightOfScreen, cameraPosition+cameraDirection, cameraDirection, cameraPosition);
 	vector<vector<vector3d>> pixelsInWorld=plane.getPixelsCoordinatesInWorld();

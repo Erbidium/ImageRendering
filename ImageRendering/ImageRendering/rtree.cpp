@@ -14,6 +14,7 @@ void Rtree::insert(triangle trig)
 		for (int i = 0; i < splitNodes.size(); i++)
 		{
 			root->childs.push_back(splitNodes[i]);
+			AdjustBoundsRect(root, root->childs[i]->x_max, root->childs[i]->x_min, root->childs[i]->y_max, root->childs[i]->y_min, root->childs[i]->z_max, root->childs[i]->z_min);
 		}
 	}
 }
