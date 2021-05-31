@@ -2,49 +2,34 @@
 #include "WorkWithBMP.h"
 #include "triangle.h"
 #include "projectionPlane.h"
-#include "intersectionChecker.h"
 #include "fileReader.h"
 #include "Rtree.h"
 #include <iostream>
 #include <fstream>
 #include <ctime>
 #include <cmath>
+#include <fstream>
 
 using namespace std;
 
-void takeParameters(vector3d& camaraPosition, vector3d& lookAtPoint, vector<vector3d>& lightPosition, int& widthOfScreen,int& heightOfScreen, vector<int>& intens, vector<vector3d>& lightColour, vector3d& lightModel);
+void takeParameters(string& pathToFile, vector3d& cameraPosition, vector3d& lookAtPoint, vector<vector3d>& lightPosition, int& widthOfScreen,int& heightOfScreen, vector<int>& intens, vector<vector3d>& lightColour, vector3d& lightModel);
 
 int main()
 {
 	vector3d cameraPosition, lookAtPoint, lightModel;
 	vector<vector3d>  lightPosition, lightColour;
 	int widthOfScreen, heightOfScreen;
-	vector<int> intens;
-	takeParameters(cameraPosition, lookAtPoint, lightPosition, widthOfScreen, heightOfScreen, intens, lightColour, lightModel);
+	string pathToObjFile;
+	vector<int> lightIntesities;
+	takeParameters(pathToObjFile, cameraPosition, lookAtPoint, lightPosition, widthOfScreen, heightOfScreen, lightIntesities, lightColour, lightModel);
 	clock_t start_time = clock();
-	vector<triangle> triangles =  fileReader::readObj("car.obj");
+	vector<triangle> triangles =  fileReader::readObj(pathToObjFile);
 	Rtree treeOfModel;
 	for(int i=0;i<triangles.size();i++)
 	{
 		treeOfModel.insert(triangles[i]);
 	}
 	cout<<"\nTree build! Tree building time: "<< (double)(clock() - start_time) / CLOCKS_PER_SEC << " seconds." <<endl;
-
-	/*scene 1 settings
-	vector3d cameraPosition(2, -2, 2);
-	vector3d lookAtPoint(0, 0, 0);
-	vector3d cameraDirection=lookAtPoint-cameraPosition;
-	vector3d lightPosition(0.5, -1.5, 3);
-	int widthOfScreen=720, heightOfScreen=480;
-	*/
-	/*
-	vector3d cameraPosition(-20, 15, 20);
-	vector3d lookAtPoint(0, 0, 0);
-	vector3d cameraDirection=lookAtPoint-cameraPosition;
-	cameraDirection=cameraDirection/(cameraDirection.getLength());
-	vector3d lightPosition(-30, 20, 25);
-	int widthOfScreen=720, heightOfScreen=480;
-	*/
 	vector3d  cameraDirection = (lookAtPoint - cameraPosition) / ((lookAtPoint - cameraPosition).getLength());
 	projectionPlane plane(widthOfScreen, heightOfScreen, cameraPosition+cameraDirection, cameraDirection, cameraPosition);
 	vector<vector<vector3d>> pixelsInWorld=plane.getPixelsCoordinatesInWorld();
@@ -58,29 +43,35 @@ int main()
 		{
 			directionOfRay=pixelsInWorld[i][j]-cameraPosition;
 			bool wasIntersection=treeOfModel.intersectionOfRayAnd3Dmodel(cameraPosition, directionOfRay, intersectionPoint, intersectedTriangle);
-			
 			if(wasIntersection==true)
 			{
-				if (!treeOfModel.findIntersectionLigthInTree(lightPosition,intersectionPoint - lightPosition, treeOfModel.getRoot(), intersectionPoint, intersectedTriangle))
+				int R=0, G=0, B=0;
+				for(int k=0;k<lightPosition.size();k++)
 				{
-					vector3d lightRay = intersectionPoint - lightPosition;
-					double cosAlpha = lightRay.findCos(intersectedTriangle.getNormal());
-					plane.pixels[i][j].B = min((double)255, lightColour.getZ() * lightModel.getZ() * abs(cosAlpha) * 255 * intens / pow((lightPosition - intersectionPoint).getLength(), 2));
-					plane.pixels[i][j].G = min((double)255, lightColour.getY() * lightModel.getY() * abs(cosAlpha) * 255 * intens / pow((lightPosition - intersectionPoint).getLength(), 2));
-					plane.pixels[i][j].R = min((double)255, lightColour.getX() * lightModel.getX() * abs(cosAlpha) * 255 * intens / pow((lightPosition - intersectionPoint).getLength(), 2));
+					if (!treeOfModel.findIntersectionLigthInTree(lightPosition[k],intersectionPoint - lightPosition[k], treeOfModel.getRoot(), intersectionPoint, intersectedTriangle))
+					{
+						vector3d lightRay = intersectionPoint - lightPosition[k];
+						double cosAlpha = lightRay.findCos(intersectedTriangle.getNormal());
+						R += lightColour[k].getX() * lightModel.getX() * abs(cosAlpha) * 255 * lightIntesities[k] / pow((lightPosition[k] - intersectionPoint).getLength(), 2);
+						G += lightColour[k].getY() * lightModel.getY() * abs(cosAlpha) * 255 * lightIntesities[k] / pow((lightPosition[k] - intersectionPoint).getLength(), 2);
+						B += lightColour[k].getZ() * lightModel.getZ() * abs(cosAlpha) * 255 * lightIntesities[k] / pow((lightPosition[k] - intersectionPoint).getLength(), 2);
+						
+					}
 				}
-				else
-				{
-					plane.pixels[i][j].B = 0;
-					plane.pixels[i][j].G = 0;
-					plane.pixels[i][j].R = 0;
-				}
+				
+				if(R>255) R=255;
+				if(G>255) G=255;
+				if(B>255) B=255;
+				plane.pixels[i][j].R=R;
+				plane.pixels[i][j].G=G;
+				plane.pixels[i][j].B=B;
+				
 			}
 			else
 			{
-				plane.pixels[i][j].B=30;
-				plane.pixels[i][j].G=30;
 				plane.pixels[i][j].R=30;
+				plane.pixels[i][j].G=30;
+				plane.pixels[i][j].B=30;
 			}
 		}
 	}
@@ -89,67 +80,65 @@ int main()
 	cout << "\nImage rendered! Render time: " <<(end_time - start_time2) / CLOCKS_PER_SEC << "seconds\nTotal time: "<< (double)(end_time - start_time) / CLOCKS_PER_SEC << " seconds." << endl;
 }
 
-void takeParameters(vector3d& camaraPosition, vector3d& lookAtPoint, vector<vector3d>& lightPosition, int& widthOfScreen, int& heightOfScreen, vector<int>& intens, vector<vector3d>& lightColour, vector3d& lightModel)
+void takeParameters(string& pathToFile, vector3d& cameraPosition, vector3d& lookAtPoint, vector<vector3d>& lightPosition, int& widthOfScreen, int& heightOfScreen, vector<int>& intens, vector<vector3d>& lightColour, vector3d& lightModel)
 {
+	string dataFile;
+	cout<<"Enter name of file: ";
+	cin>>dataFile;
+	ifstream inFile(dataFile);
 	double temp;
-	cout << "\nEnter camera position:\nx: ";
-	cin >> temp;
-	camaraPosition.setX(temp);
-	cout << "\ny: ";
-	cin >> temp;
-	camaraPosition.setY(temp);
-	cout << "\nz: ";
-	cin >> temp;
-	camaraPosition.setZ(temp);
-	cout << "\nEnter the point where you want to look:\nx: ";
-	cin >> temp;
+	string info;
+	inFile>>info;
+	inFile>>pathToFile;
+	inFile>>info;
+	inFile >> temp;
+	cameraPosition.setX(temp);
+	inFile >> temp;
+	cameraPosition.setY(temp);
+	inFile >> temp;
+	cameraPosition.setZ(temp);
+	inFile>>info;
+	inFile >> temp;
 	lookAtPoint.setX(temp);
-	cout << "\ny: ";
-	cin >> temp;
+	inFile >> temp;
 	lookAtPoint.setY(temp);
-	cout << "\nz: ";
-	cin >> temp;
+	inFile >> temp;
 	lookAtPoint.setZ(temp);
-	int size;
-	cout << "\nEnter Amount of the light sources:\n ";
-	cin >> size;
-	lightPosition.resize(size);
-	lightColour.resize(size);
-	intens.resize(size);
-	for (int i = 0; i < size; i++)
+	inFile>>info;
+	int numberOfLightSources;
+	inFile >> numberOfLightSources;
+	lightPosition.resize(numberOfLightSources);
+	lightColour.resize(numberOfLightSources);
+	intens.resize(numberOfLightSources);
+	for (int i = 0; i < numberOfLightSources; i++)
 	{
-		cout << "\nEnter the "<< i <<" light source position:\nx: ";
-		cin >> temp;
+		inFile>>info;
+		inFile >> temp;
 		lightPosition[i].setX(temp);
-		cout << "\ny: ";
-		cin >> temp;
+		inFile >> temp;
 		lightPosition[i].setY(temp);
-		cout << "\nz: ";
-		cin >> temp;
+		inFile >> temp;
 		lightPosition[i].setZ(temp);
-		cout << "\nEnter "<< i <<" light intense:\n";
-		cin >> intens[i];
-		cout << "\nEnter the colour of the "<< i <<" light:\nR: ";
-		cin >> temp;
+		inFile>>info;
+		inFile >> intens[i];
+		inFile>>info;
+		inFile >> temp;
 		lightColour[i].setX(temp / 255);
-		cout << "\nG: ";
-		cin >> temp;
+		inFile >> temp;
 		lightColour[i].setY(temp / 255);
-		cout << "\nB: ";
-		cin >> temp;
+		inFile >> temp;
 		lightColour[i].setZ(temp / 255);
 	}
-	cout << "\nEnter the colour of the model:\nR: ";
-	cin >> temp;
+	inFile>>info;
+	inFile >> temp;
 	lightModel.setX(temp/255);
-	cout << "\nG: ";
-	cin >> temp;
+	inFile >> temp;
 	lightModel.setY(temp/255);
-	cout << "\nB: ";
-	cin >> temp;
+	inFile >> temp;
 	lightModel.setZ(temp/255);
-	cout << "\nEnter width of image:\n";
-	cin >> widthOfScreen;
-	cout << "\nEnter height of image:\n";
-	cin >> heightOfScreen;
+	inFile>>info;
+	inFile >> widthOfScreen;
+	inFile>>info;
+	inFile >> heightOfScreen;
+	inFile.close();
 }

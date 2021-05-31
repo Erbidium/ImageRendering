@@ -17,7 +17,7 @@ public:
 	pixels(height, std::vector<PIXEL>(width)), pixelsCoordinatesInWorld(height, std::vector<vector3d>(width))
 	{
 		vector3d cameraDirectionNormalized=cameraDirection/(cameraDirection.getLength());
-		vector3d rightVector=vector3d(0, 1, 0).crossProduct(cameraDirectionNormalized);
+		vector3d rightVector=vector3d(0, 0, 1).crossProduct(cameraDirectionNormalized);
 		vector3d upVector=cameraDirectionNormalized.crossProduct(rightVector);
 		double imageAspectRatio=static_cast<double>(width)/height;
 		for(int pixelY=0;pixelY<height;pixelY++)
