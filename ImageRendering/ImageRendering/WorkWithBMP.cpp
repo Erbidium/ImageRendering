@@ -10,7 +10,7 @@ void workWithBMP::createBMPImage(int depth, int width, vector<vector<PIXEL>>& im
     bmp header;
     ofstream out("result.bmp", ios::binary);
     char str[10] = {};
-    int padding = (4 - (width) % 4) % 4;
+    int padding = (4 - (width*sizeof(PIXEL)) % 4) % 4;
     out.seekp(0, ios_base::beg);
     header.filesize = sizeof(bmp) + sizeof(PIXEL) * header.width * header.depth + padding * header.depth;
     header.width = width;
