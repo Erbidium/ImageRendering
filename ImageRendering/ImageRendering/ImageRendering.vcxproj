@@ -142,23 +142,22 @@
     <ClCompile Include="fileReader.cpp" />
     <ClCompile Include="intersectionChecker.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="projectionPlane.cpp" />
-    <ClCompile Include="Rtree.cpp" />
+    <ClCompile Include="rtree.cpp" />
     <ClCompile Include="triangle.cpp" />
     <ClCompile Include="vector3d.cpp" />
-    <ClCompile Include="WorkWithBMP.cpp" />
+    <ClCompile Include="workWithBMP.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fileReader.h" />
-    <ClInclude Include="BMP.h" />
+    <ClInclude Include="bmp.h" />
     <ClInclude Include="intersectionChecker.h" />
-    <ClInclude Include="Node.h" />
-    <ClInclude Include="PIXEL.h" />
+    <ClInclude Include="node.h" />
+    <ClInclude Include="pixel.h" />
     <ClInclude Include="projectionPlane.h" />
-    <ClInclude Include="Rtree.h" />
+    <ClInclude Include="rtree.h" />
     <ClInclude Include="triangle.h" />
     <ClInclude Include="vector3d.h" />
-    <ClInclude Include="WorkWithBMP.h" />
+    <ClInclude Include="workWithBMP.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

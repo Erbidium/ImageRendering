@@ -1,5 +1,5 @@
 #pragma pack(push, 1)
-struct BMP {
+struct bmp {
     int8_t id[2];            // Завжди дві літери 'B' і 'M'
     int32_t filesize;        // Розмір файла в байтах
     int32_t reserved;        // 0, 0
@@ -15,7 +15,7 @@ struct BMP {
     int32_t biYPelsPerMeter; // Те саме, по висоті
     int32_t biClrUsed;       // Для індексованих зображень, можна поставити 0L
     int32_t biClrImportant;  // Те саме
-    BMP() {
+    bmp() {
         id[0] = 'B';
         id[1] = 'M';
         reserved = 0;

@@ -3,17 +3,17 @@
 #include "triangle.h"
 #include <vector>
 
-struct Node
+struct node
 {
-	Node():x_max(INT_MIN),x_min(INT_MAX),y_max(INT_MIN),y_min(INT_MAX), z_max(INT_MIN), z_min(INT_MAX){}
-	~Node()
+	node():x_max(INT_MIN),x_min(INT_MAX),y_max(INT_MIN),y_min(INT_MAX), z_max(INT_MIN), z_min(INT_MAX){}
+	~node()
 	{
 		for(int i=0;i<childs.size();i++)
 		{
 			delete childs[i];
 		}
 	}
-	Node* operator=(Node* current)
+	node* operator=(node* current)
 	{
 		childs=current->childs;
 		triangles=current->triangles;
@@ -42,7 +42,7 @@ struct Node
 	{
 		return { (x_max + x_min) / 2, (y_max + y_min) / 2, (z_max + z_min) / 2 };
 	}
-	std::vector<Node*> childs;
+	std::vector<node*> childs;
 	std::vector<triangle> triangles;
 	double x_max, x_min, y_max, y_min, z_max, z_min;
 };

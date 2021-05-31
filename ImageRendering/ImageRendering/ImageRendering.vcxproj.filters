@@ -4,22 +4,21 @@
     <ClCompile Include="fileReader.cpp" />
     <ClCompile Include="intersectionChecker.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="projectionPlane.cpp" />
     <ClCompile Include="triangle.cpp" />
     <ClCompile Include="vector3d.cpp" />
-    <ClCompile Include="WorkWithBMP.cpp" />
-    <ClCompile Include="Rtree.cpp" />
+    <ClCompile Include="workWithBMP.cpp" />
+    <ClCompile Include="rtree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fileReader.h" />
-    <ClInclude Include="BMP.h" />
+    <ClInclude Include="bmp.h" />
     <ClInclude Include="intersectionChecker.h" />
-    <ClInclude Include="PIXEL.h" />
+    <ClInclude Include="pixel.h" />
     <ClInclude Include="projectionPlane.h" />
     <ClInclude Include="triangle.h" />
     <ClInclude Include="vector3d.h" />
-    <ClInclude Include="WorkWithBMP.h" />
-    <ClInclude Include="Rtree.h" />
-    <ClInclude Include="Node.h" />
+    <ClInclude Include="workWithBMP.h" />
+    <ClInclude Include="rtree.h" />
+    <ClInclude Include="node.h" />
   </ItemGroup>
 </Project>

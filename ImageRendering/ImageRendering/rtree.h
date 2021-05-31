@@ -1,28 +1,28 @@
 #pragma once
 #include <vector>
 #include "triangle.h"
-#include "Node.h"
+#include "node.h"
 
-class Rtree
+class rtree
 {
     const int maxEntries = 4;
     const int maxNumberOfLeafs = 5;
-    Node* root;
-	bool findIntersectionInTree(vector3d rayOrigin, vector3d rayVector, vector3d &outIntersectionPoint, Node *current, bool &finished, triangle &intersectedTriangle);
+    node* root;
+	bool findIntersectionInTree(vector3d rayOrigin, vector3d rayVector, vector3d &outIntersectionPoint, node *current, bool &finished, triangle &intersectedTriangle);
 public:
-    Rtree() { root = new Node; }
-	~Rtree(){ delete root; }
+    rtree() { root = new node; }
+	~rtree(){ delete root; }
     void insert(triangle);
 	bool intersectionOfRayAnd3Dmodel(vector3d rayOrigin, vector3d rayVector, vector3d &outIntersectionPoint, triangle &intersectedTriangle);
-    bool findIntersectionLigthInTree(vector3d lightOrigin, vector3d lightVector, Node *current, vector3d &intersectionPoint, triangle &intersectedTriangle);
-    std::vector<Node*> ChooseLeaf(Node*, triangle);
-    std::vector<Node*> DoInsert(Node*, triangle);
-    std::vector<Node*> LinearSplit(std::vector<triangle>);
-    std::vector<Node*> LinearSplitNodes(std::vector<Node*> Nodes, Node*);
-    void AdjustBounds(Node*, triangle);
-    void AdjustBoundsRect(Node* current, double x_max, double x_min, double y_max, double y_min, double z_max, double z_min);
-    Node* MinimalResize(Node*, triangle);
-    double getVolume(Node* current);
-    Node* getRoot();
+    bool findIntersectionLigthInTree(vector3d lightOrigin, vector3d lightVector, node *current, vector3d &intersectionPoint, triangle &intersectedTriangle);
+    std::vector<node*> ChooseLeaf(node*, triangle);
+    std::vector<node*> DoInsert(node*, triangle);
+    std::vector<node*> LinearSplit(std::vector<triangle>);
+    std::vector<node*> LinearSplitNodes(std::vector<node*> Nodes, node*);
+    void AdjustBounds(node*, triangle);
+    void AdjustBoundsRect(node* current, double x_max, double x_min, double y_max, double y_min, double z_max, double z_min);
+    node* MinimalResize(node*, triangle);
+    double getVolume(node* current);
+    node* getRoot();
 };
 

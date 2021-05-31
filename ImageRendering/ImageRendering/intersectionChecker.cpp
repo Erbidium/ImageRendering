@@ -40,7 +40,7 @@ bool intersectionChecker::rayIntersectsTriangle(vector3d rayOrigin, vector3d ray
         return false;
 }
 
-bool intersectionChecker::intersectionRayAndBox(vector3d direction, vector3d origin, Node* current)
+bool intersectionChecker::intersectionRayAndBox(vector3d direction, vector3d origin, node* current)
 {
     vector3d maxValues(current->x_max, current->y_max, current->z_max);
     vector3d minValues(current->x_min, current->y_min, current->z_min);

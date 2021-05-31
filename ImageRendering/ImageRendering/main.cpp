@@ -1,9 +1,9 @@
 #include "vector3d.h"
-#include "WorkWithBMP.h"
+#include "workWithBMP.h"
 #include "triangle.h"
 #include "projectionPlane.h"
 #include "fileReader.h"
-#include "Rtree.h"
+#include "rtree.h"
 #include <iostream>
 #include <fstream>
 #include <ctime>
@@ -24,7 +24,7 @@ int main()
 	takeParameters(pathToObjFile, cameraPosition, lookAtPoint, lightPosition, widthOfScreen, heightOfScreen, lightIntesities, lightColour, lightModel);
 	clock_t start_time = clock();
 	vector<triangle> triangles =  fileReader::readObj(pathToObjFile);
-	Rtree treeOfModel;
+	rtree treeOfModel;
 	for(int i=0;i<triangles.size();i++)
 	{
 		treeOfModel.insert(triangles[i]);
@@ -75,9 +75,9 @@ int main()
 			}
 		}
 	}
-	WorkWithBMP::createBMPImage(heightOfScreen, widthOfScreen, plane.pixels);
+	workWithBMP::createBMPImage(heightOfScreen, widthOfScreen, plane.pixels);
 	clock_t end_time = clock();
-	cout << "\nImage rendered! Render time: " <<(end_time - start_time2) / CLOCKS_PER_SEC << "seconds\nTotal time: "<< (double)(end_time - start_time) / CLOCKS_PER_SEC << " seconds." << endl;
+	cout << "\nImage rendered! Render time: " <<(end_time - start_time2) / CLOCKS_PER_SEC << " seconds\nTotal time: "<< (double)(end_time - start_time) / CLOCKS_PER_SEC << " seconds." << endl;
 }
 
 void takeParameters(string& pathToFile, vector3d& cameraPosition, vector3d& lookAtPoint, vector<vector3d>& lightPosition, int& widthOfScreen, int& heightOfScreen, vector<int>& intens, vector<vector3d>& lightColour, vector3d& lightModel)
