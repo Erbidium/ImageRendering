@@ -119,3 +119,66 @@ vector<triangle> fileReader::readObj(string nameOfFile)
 	}
 	return triangles;
 }
+
+void fileReader::takeParameters(string& pathToFile, vector3d& cameraPosition, vector3d& lookAtPoint, vector<vector3d>& lightPosition, int& widthOfScreen, int& heightOfScreen, vector<int>& intens, vector<vector3d>& lightColour, vector3d& lightModel)
+{
+	string dataFile;
+	cout<<"Enter name of file: ";
+	cin>>dataFile;
+	ifstream inFile(dataFile);
+	double temp;
+	string info;
+	inFile>>info;
+	inFile>>pathToFile;
+	inFile>>info;
+	inFile >> temp;
+	cameraPosition.setX(temp);
+	inFile >> temp;
+	cameraPosition.setY(temp);
+	inFile >> temp;
+	cameraPosition.setZ(temp);
+	inFile>>info;
+	inFile >> temp;
+	lookAtPoint.setX(temp);
+	inFile >> temp;
+	lookAtPoint.setY(temp);
+	inFile >> temp;
+	lookAtPoint.setZ(temp);
+	inFile>>info;
+	int numberOfLightSources;
+	inFile >> numberOfLightSources;
+	lightPosition.resize(numberOfLightSources);
+	lightColour.resize(numberOfLightSources);
+	intens.resize(numberOfLightSources);
+	for (int i = 0; i < numberOfLightSources; i++)
+	{
+		inFile>>info;
+		inFile >> temp;
+		lightPosition[i].setX(temp);
+		inFile >> temp;
+		lightPosition[i].setY(temp);
+		inFile >> temp;
+		lightPosition[i].setZ(temp);
+		inFile>>info;
+		inFile >> intens[i];
+		inFile>>info;
+		inFile >> temp;
+		lightColour[i].setX(temp / 255);
+		inFile >> temp;
+		lightColour[i].setY(temp / 255);
+		inFile >> temp;
+		lightColour[i].setZ(temp / 255);
+	}
+	inFile>>info;
+	inFile >> temp;
+	lightModel.setX(temp/255);
+	inFile >> temp;
+	lightModel.setY(temp/255);
+	inFile >> temp;
+	lightModel.setZ(temp/255);
+	inFile>>info;
+	inFile >> widthOfScreen;
+	inFile>>info;
+	inFile >> heightOfScreen;
+	inFile.close();
+}

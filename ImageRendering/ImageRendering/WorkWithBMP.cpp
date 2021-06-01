@@ -5,7 +5,7 @@
 
 using namespace std;
 
-void workWithBMP::createBMPImage(int depth, int width, vector<vector<PIXEL>>& image)
+void workWithBMP::createBMPImage(int depth, int width, vector<vector<PIXEL>> image)
 {
     bmp header;
     ofstream out("result.bmp", ios::binary);

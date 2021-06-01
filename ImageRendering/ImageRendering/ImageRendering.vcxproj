@@ -139,15 +139,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="graphicalScene.cpp" />
     <ClCompile Include="fileReader.cpp" />
     <ClCompile Include="intersectionChecker.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="prohectionPlane.cpp" />
     <ClCompile Include="rtree.cpp" />
     <ClCompile Include="triangle.cpp" />
     <ClCompile Include="vector3d.cpp" />
     <ClCompile Include="workWithBMP.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="graphicalScene.h" />
     <ClInclude Include="fileReader.h" />
     <ClInclude Include="bmp.h" />
     <ClInclude Include="intersectionChecker.h" />
