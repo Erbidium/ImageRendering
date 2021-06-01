@@ -21,6 +21,7 @@ class graphicalScene
 	clock_t start_time;
 	clock_t start_renderTime;
 	projectionPlane * plane;
+	double angle;
 public:
 	graphicalScene();
 	void buildTree();

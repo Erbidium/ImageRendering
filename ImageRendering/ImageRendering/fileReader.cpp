@@ -4,7 +4,7 @@
 
 using namespace std;
 
-vector<triangle> fileReader::readObj(string nameOfFile)
+vector<triangle> fileReader::readObj(string nameOfFile, double angle)
 {
 	vector<triangle> triangles;
 	vector<vector3d> tops;
@@ -26,8 +26,9 @@ vector<triangle> fileReader::readObj(string nameOfFile)
 			k = s.find(' ');
 			double z = stod(s.substr(0, k));
 			s.erase(0, k + 1);
-			tempTop.setX(x);
-			tempTop.setY(y);
+			double angleInRadians = angle * 3.1451 / 180;
+			tempTop.setX(x*cos(angleInRadians)-y*sin(angleInRadians));
+			tempTop.setY(x * sin(angleInRadians) + y * cos(angleInRadians));
 			tempTop.setZ(z);
 			tops.push_back(tempTop);
 		}
@@ -120,7 +121,7 @@ vector<triangle> fileReader::readObj(string nameOfFile)
 	return triangles;
 }
 
-void fileReader::takeParameters(string& pathToFile, vector3d& cameraPosition, vector3d& lookAtPoint, vector<vector3d>& lightPosition, int& widthOfScreen, int& heightOfScreen, vector<int>& intens, vector<vector3d>& lightColour, vector3d& lightModel)
+void fileReader::takeParameters(string& pathToFile, vector3d& cameraPosition, vector3d& lookAtPoint, vector<vector3d>& lightPosition, int& widthOfScreen, int& heightOfScreen, vector<int>& intens, vector<vector3d>& lightColour, vector3d& lightModel, double& angle)
 {
 	string dataFile;
 	cout<<"Enter name of file: ";
@@ -180,5 +181,7 @@ void fileReader::takeParameters(string& pathToFile, vector3d& cameraPosition, ve
 	inFile >> widthOfScreen;
 	inFile>>info;
 	inFile >> heightOfScreen;
+	inFile>>info;
+	inFile>>angle;
 	inFile.close();
 }

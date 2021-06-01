@@ -3,14 +3,14 @@
 
 graphicalScene::graphicalScene():start_time(0), plane(nullptr), start_renderTime(0)
 {
-	fileReader::takeParameters(pathToObjFile, cameraPosition, lookAtPoint, lightPosition, widthOfScreen, heightOfScreen, lightIntesities, lightColour, lightModel);
+	fileReader::takeParameters(pathToObjFile, cameraPosition, lookAtPoint, lightPosition, widthOfScreen, heightOfScreen, lightIntesities, lightColour, lightModel, angle);
 	cameraDirection = (lookAtPoint - cameraPosition) / ((lookAtPoint - cameraPosition).getLength());
 }
 
 void graphicalScene::buildTree()
 {
 	start_time= clock();
-	vector<triangle> triangles =  fileReader::readObj(pathToObjFile);
+	vector<triangle> triangles =  fileReader::readObj(pathToObjFile, angle);
 	for(int i=0;i<triangles.size();i++)
 	{
 		treeOfModel.insert(triangles[i]);
