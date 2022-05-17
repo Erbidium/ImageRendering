@@ -73,7 +73,7 @@ void graphicalScene::pixelsToFile()const
 {
 	workWithBMP::createBMPImage(heightOfScreen, widthOfScreen, plane->getPixelMatrix());
 	clock_t end_time = clock();
-	cout << "\nImage rendered! Render time: " <<(end_time - start_renderTime) / CLOCKS_PER_SEC << " seconds\nTotal time: "<< (double)(end_time - start_time) / CLOCKS_PER_SEC << " seconds." << endl;
+	cout << "\nImage rendered! Render time: " <<(end_time - start_renderTime) / (double)CLOCKS_PER_SEC << " seconds\nTotal time: "<< (double)(end_time - start_time) / CLOCKS_PER_SEC << " seconds." << endl;
 }
 
 graphicalScene::~graphicalScene()

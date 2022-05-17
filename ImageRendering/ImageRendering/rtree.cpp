@@ -36,7 +36,7 @@ vector<node*> rtree::ChooseLeaf(node* current, triangle trig)
 		node * optimalNode=MinimalResize(current, trig);
 		SplitNodes = ChooseLeaf(optimalNode, trig);
 		AdjustBounds(current, trig);
-		if (SplitNodes.size() > 0)
+		if (!SplitNodes.empty())
 		{
 			int indexOfOptimal=0;
 			for(int i=0;i<current->childs.size();i++)
@@ -50,10 +50,11 @@ vector<node*> rtree::ChooseLeaf(node* current, triangle trig)
 			current->childs.erase(current->childs.begin()+indexOfOptimal);
 			if (current->childs.size() < maxEntries)
 			{
-				for(int i=0;i<SplitNodes.size();i++)
+				for (auto& SplitNode : SplitNodes)
 				{
-					current->childs.push_back(SplitNodes[i]);
-					AdjustBoundsRect(current, SplitNodes[i]->x_max, SplitNodes[i]->x_min, SplitNodes[i]->y_max, SplitNodes[i]->y_min, SplitNodes[i]->z_max, SplitNodes[i]->z_min);
+					current->childs.push_back(SplitNode);
+					AdjustBoundsRect(current, SplitNode->x_max, SplitNode->x_min, SplitNode->y_max, SplitNode->y_min,
+					                 SplitNode->z_max, SplitNode->z_min);
 				}
 				SplitNodes.clear();
 			}
@@ -143,19 +144,20 @@ void rtree::AdjustBoundsRect(node* current, double x_max, double x_min, double y
 node* rtree::MinimalResize(node* current, triangle trig)
 {
 	double MinimalDeltaVolume = INT_MAX;
-	int indexOfChild;
+	int indexOfChild = 0;
 	for (int i = 0; i < current->childs.size(); i++)
 	{
-		node *temp = new node;
-		*temp=current->childs[i];
-		double PreviousVolume = getVolume(temp);
-		AdjustBounds(temp, trig);
-		double NewVolume = getVolume(temp);
+		node temp;
+		temp=*current->childs[i];
+		double PreviousVolume = getVolume(&temp);
+		AdjustBounds(&temp, trig);
+		double NewVolume = getVolume(&temp);
 		if (MinimalDeltaVolume > NewVolume - PreviousVolume)
 		{
 			MinimalDeltaVolume = NewVolume - PreviousVolume;
 			indexOfChild = i;
 		}
+		temp.childs.clear();
 	}
 	return current->childs[indexOfChild];
 }
@@ -197,19 +199,19 @@ vector<node*> rtree::LinearSplit(vector<triangle> trigs)
 	double oldVolume1;
 	double oldVolume2;
 	triangle currentTriangle;
-	node* tempLeaf1 = new node;
-	node* tempLeaf2 = new node;
+	node tempLeaf1;
+	node tempLeaf2;
 	for (int i = 0; i < trigs.size(); i++)
 	{
 		oldVolume1 = getVolume(leaf1);
 		oldVolume2 = getVolume(leaf2);
 		currentTriangle = trigs[i];
-		*tempLeaf1=leaf1;
-		*tempLeaf2=leaf2;
-		AdjustBounds(tempLeaf1, trigs[i]);
-		double VoulumeOfFirst = getVolume(tempLeaf1);
-		AdjustBounds(tempLeaf2, trigs[i]);
-		double VolumeOfSecondLeaf = getVolume(tempLeaf2);
+		tempLeaf1=*leaf1;
+		tempLeaf2=*leaf2;
+		AdjustBounds(&tempLeaf1, trigs[i]);
+		double VoulumeOfFirst = getVolume(&tempLeaf1);
+		AdjustBounds(&tempLeaf2, trigs[i]);
+		double VolumeOfSecondLeaf = getVolume(&tempLeaf2);
 		if (VoulumeOfFirst - oldVolume1 > VolumeOfSecondLeaf - oldVolume2)
 		{
 			leaf2->triangles.push_back(currentTriangle);
@@ -221,6 +223,8 @@ vector<node*> rtree::LinearSplit(vector<triangle> trigs)
 			AdjustBounds(leaf1, currentTriangle);
 		}
 	}
+	tempLeaf1.childs.clear();
+	tempLeaf2.childs.clear();
 	vector<node*> SplitNodes;
 	SplitNodes.push_back(leaf1);
 	SplitNodes.push_back(leaf2);
@@ -230,8 +234,6 @@ vector<node*> rtree::LinearSplit(vector<triangle> trigs)
 vector<node*> rtree::LinearSplitNodes(vector<node*> Spleet, node* current)
 {
 	vector<node*> SplitNodes(2);
-	SplitNodes[0] = new node;
-	SplitNodes[1] = new node;
 	vector<node*> nodesToSplit = Spleet;
 	nodesToSplit.insert(nodesToSplit.end(), current->childs.begin(), current->childs.end());
 	int indexOfChild1 = 0, indexOfChild2 = 1;
@@ -264,22 +266,22 @@ vector<node*> rtree::LinearSplitNodes(vector<node*> Spleet, node* current)
 	{
 		nodesToSplit.erase(nodesToSplit.begin() + indexOfChild2 - 1);
 	}
-	node* tempChild1 = new node;
-	node* tempChild2 = new node;
+	node tempChild1;
+	node tempChild2;
 	double OldVolume1;
 	double OldVolume2;
 	double VoulumeOfFirst;
 	double VolumeOfSecondChild;
 	for (int i = 0; i < nodesToSplit.size(); i++)
 	{
-		*tempChild1=Child1;
-		*tempChild2=Child2;
+		tempChild1=*Child1;
+		tempChild2=*Child2;
 		OldVolume1 = getVolume(Child1);
 		OldVolume2 = getVolume(Child2);
-		AdjustBoundsRect(tempChild1, nodesToSplit[i]->x_max, nodesToSplit[i]->x_min, nodesToSplit[i]->y_max, nodesToSplit[i]->y_min, nodesToSplit[i]->z_max, nodesToSplit[i]->z_min);
-		VoulumeOfFirst = getVolume(tempChild1);
-		AdjustBoundsRect(tempChild2, nodesToSplit[i]->x_max, nodesToSplit[i]->x_min, nodesToSplit[i]->y_max, nodesToSplit[i]->y_min, nodesToSplit[i]->z_max, nodesToSplit[i]->z_min);
-		VolumeOfSecondChild = getVolume(tempChild2);
+		AdjustBoundsRect(&tempChild1, nodesToSplit[i]->x_max, nodesToSplit[i]->x_min, nodesToSplit[i]->y_max, nodesToSplit[i]->y_min, nodesToSplit[i]->z_max, nodesToSplit[i]->z_min);
+		VoulumeOfFirst = getVolume(&tempChild1);
+		AdjustBoundsRect(&tempChild2, nodesToSplit[i]->x_max, nodesToSplit[i]->x_min, nodesToSplit[i]->y_max, nodesToSplit[i]->y_min, nodesToSplit[i]->z_max, nodesToSplit[i]->z_min);
+		VolumeOfSecondChild = getVolume(&tempChild2);
 		if (VoulumeOfFirst - OldVolume1 > VolumeOfSecondChild - OldVolume2)
 		{
 			Child2->childs.push_back(nodesToSplit[i]);
@@ -293,6 +295,8 @@ vector<node*> rtree::LinearSplitNodes(vector<node*> Spleet, node* current)
 	}
 	SplitNodes[0] = Child1;
 	SplitNodes[1] = Child2;
+	tempChild1.childs.clear();
+	tempChild2.childs.clear();
 	return SplitNodes;
 }
 
@@ -302,11 +306,8 @@ bool rtree::intersectionOfRayAnd3Dmodel(vector3d rayOrigin, vector3d rayVector, 
 	{
 		return false;
 	}
-	else
-	{
-		bool wasInetersection = false;
-		return findIntersectionInTree(rayOrigin, rayVector, outIntersectionPoint, root, wasInetersection, intersectedTriangle);
-	}
+	bool wasInetersection = false;
+	return findIntersectionInTree(rayOrigin, rayVector, outIntersectionPoint, root, wasInetersection, intersectedTriangle);
 }
 
 bool rtree::findIntersectionInTree(vector3d rayOrigin, vector3d rayVector, vector3d &outIntersectionPoint, node *current, bool &wasIntersection, triangle &intersectedTriangle)
